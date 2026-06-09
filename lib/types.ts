@@ -52,3 +52,13 @@ export type MatchResult = {
   score: number;
   reasons: string[];
 };
+
+export type RestaurantMatch = MatchResult & {
+  restaurant: Restaurant;
+};
+
+export type RecurringUserPreferences = {
+  frequentCategories: string[];
+  frequentMoods: string[];
+  usualBudget?: BudgetLevel;
+};
