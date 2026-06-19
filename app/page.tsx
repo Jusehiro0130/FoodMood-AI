@@ -1,76 +1,51 @@
-import { MapPin, Sparkles, Utensils } from "lucide-react";
-import { AppShell } from "@/components/app-shell";
+"use client";
 
-const cravingExamples = [
-  "No se que comer",
-  "Salchipapa barata cerca",
-  "Italiana para una cita",
-  "Algo rapido y economico",
-];
+import { Sparkles, Utensils } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { AppShell } from "@/components/app-shell";
+import { BottomNav } from "@/components/bottom-nav";
+import { PreferenceChip } from "@/components/preference-chip";
+import { RangeSelector } from "@/components/range-selector";
+import { RestaurantCard } from "@/components/restaurant-card";
+import { SearchBox } from "@/components/search-box";
+import { parseFoodIntent } from "@/lib/ai/parse-food-intent";
+import { restaurants } from "@/lib/data/restaurants";
+import { rankRestaurants } from "@/lib/ranking";
+import { defaultProfile, storage } from "@/lib/storage";
+import { getRecurringUserPreferences } from "@/lib/user-preferences";
+import type { SearchHistoryItem, SearchRange, UserProfile } from "@/lib/types";
+
+const quickChips = ["No se que comer", "Salchipapa barata cerca", "Italiana para una cita", "Algo rapido y economico", "Hamburguesa grande cerca"];
 
 export default function Home() {
-  return (
-    <AppShell>
-      <section className="flex min-h-screen flex-col justify-between gap-10 px-5 py-6 sm:px-8 lg:mx-auto lg:max-w-5xl lg:py-10">
-        <header className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="grid size-11 place-items-center rounded-2xl bg-[#fa5a2a] text-white shadow-sm">
-              <Utensils size={22} strokeWidth={2.4} />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-[#7b5545]">MVP setup</p>
-              <h1 className="text-xl font-bold tracking-normal text-[#251611]">
-                FoodMood AI
-              </h1>
-            </div>
-          </div>
-          <div className="flex shrink-0 items-center gap-1 rounded-full bg-white px-3 py-2 text-sm font-medium text-[#5f463b] shadow-sm ring-1 ring-black/5">
-            <MapPin size={16} />
-            Panama
-          </div>
-        </header>
+  const router = useRouter();
+  const [profile, setProfile] = useState<UserProfile>(defaultProfile);
+  const [range, setRange] = useState<SearchRange>("5km");
+  const [history, setHistory] = useState<SearchHistoryItem[]>([]);
+  const [ready, setReady] = useState(false);
 
-        <main className="flex flex-1 flex-col justify-center gap-8">
-          <div className="space-y-5">
-            <div className="inline-flex items-center gap-2 rounded-full bg-[#fff0d8] px-4 py-2 text-sm font-semibold text-[#7a3d1d] ring-1 ring-[#f0c796]">
-              <Sparkles size={16} />
-              Recomendador inteligente de comida
-            </div>
-            <div className="max-w-3xl space-y-4">
-              <h2 className="text-4xl font-black leading-tight tracking-normal text-[#251611] sm:text-5xl lg:text-6xl">
-                Decide que comer segun tu antojo.
-              </h2>
-              <p className="max-w-xl text-base leading-7 text-[#6d5043] sm:text-lg">
-                Una base lista para construir el MVP de FoodMood AI: Next.js,
-                TypeScript, Tailwind CSS, PNPM y una experiencia mobile-first.
-              </p>
-            </div>
-          </div>
+  useEffect(() => {
+    if (!storage.getSession()) { router.replace("/login"); return; }
+    if (!storage.isOnboardingCompleted()) { router.replace("/onboarding"); return; }
+    setProfile(storage.getProfile() ?? defaultProfile);
+    setRange(storage.getRange());
+    setHistory(storage.getSearchHistory());
+    setReady(true);
+  }, [router]);
 
-          <div className="rounded-[28px] bg-white p-4 shadow-xl shadow-[#ca5b2817] ring-1 ring-black/5 sm:p-5">
-            <div className="rounded-[22px] border border-dashed border-[#e8c5a7] bg-[#fffaf2] p-4">
-              <p className="text-sm font-semibold text-[#7b5545]">
-                Pronto podras escribir:
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {cravingExamples.map((example) => (
-                  <span
-                    className="rounded-full bg-white px-3 py-2 text-sm font-medium text-[#3d2a22] shadow-sm ring-1 ring-black/5"
-                    key={example}
-                  >
-                    {example}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </main>
+  const ranked = useMemo(() => rankRestaurants(restaurants, profile, null, range, history), [profile, range, history]);
+  const recurring = useMemo(() => getRecurringUserPreferences(history), [history]);
+  const recurringIntent = useMemo(() => recurring.categories.length || recurring.ambience.length || recurring.budget ? { query: "Tus antojos frecuentes", categories: recurring.categories, mood: recurring.ambience, budget: recurring.budget, distancePreference: "anywhere" as const, keywords: [...recurring.categories, ...recurring.ambience] } : parseFoodIntent("salchipapa barata cerca"), [recurring]);
+  const recurringRestaurants = useMemo(() => rankRestaurants(restaurants, profile, recurringIntent, range, history).slice(0, 5), [profile, recurringIntent, range, history]);
 
-        <footer className="rounded-3xl bg-[#251611] p-4 text-sm text-[#ffe5cf] shadow-lg">
-          Fase actual: proyecto base. Login, onboarding, restaurantes e IA se
-          agregaran en ramas separadas.
-        </footer>
-      </section>
-    </AppShell>
-  );
+  function handleRangeChange(nextRange: SearchRange) { setRange(nextRange); storage.saveRange(nextRange); }
+  function goQuickSearch(query: string) { router.push(`/search?q=${encodeURIComponent(query)}`); }
+  if (!ready) return <AppShell />;
+
+  return <AppShell withBottomPadding><main className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-5 sm:px-6 lg:py-8"><header className="flex items-center justify-between gap-3"><div><p className="text-sm font-bold text-[#7b5545]">Hola, Juan</p><h1 className="mt-1 text-3xl font-black leading-tight text-[#251611]">Que se te antoja hoy?</h1></div><div className="grid size-12 place-items-center rounded-2xl bg-[#fa5a2a] text-white shadow-sm"><Utensils size={22} /></div></header><SearchBox /><section className="space-y-3"><div className="flex items-center gap-2 text-sm font-black text-[#7b5545]"><Sparkles size={17} />Atajos de antojo</div><div className="flex gap-2 overflow-x-auto pb-1">{quickChips.map((chip) => <button className="shrink-0 rounded-full bg-white px-4 py-3 text-sm font-black text-[#5f463b] shadow-sm ring-1 ring-black/5" key={chip} onClick={() => goQuickSearch(chip)} type="button">{chip}</button>)}</div></section><section className="space-y-3 rounded-3xl bg-white p-4 shadow-sm"><p className="text-xs font-black uppercase tracking-[0.16em] text-[#9d7d6d]">Rango</p><h2 className="text-lg font-black">Cerca de ti</h2><RangeSelector onChange={handleRangeChange} value={range} /></section><RestaurantSection title="Para ti" restaurants={ranked.slice(0, 6)} /><RestaurantSection title="Cerca de ti" restaurants={ranked.slice(0, 4)} /><section className="space-y-3"><div className="flex items-center justify-between gap-3"><h2 className="text-xl font-black">Tus antojos frecuentes</h2><div className="hidden flex-wrap gap-2 sm:flex">{[...recurring.categories, ...recurring.ambience].slice(0, 3).map((item) => <PreferenceChip key={item} label={item} type="static" />)}</div></div><div className="grid gap-4 md:grid-cols-2">{recurringRestaurants.map((restaurant) => <RestaurantCard key={`recurring-${restaurant.id}`} restaurant={restaurant} />)}</div></section></main><BottomNav /></AppShell>;
+}
+
+function RestaurantSection({ title, restaurants }: { title: string; restaurants: ReturnType<typeof rankRestaurants> }) {
+  return <section className="space-y-3"><h2 className="text-xl font-black">{title}</h2><div className="grid gap-4 md:grid-cols-2">{restaurants.map((restaurant) => <RestaurantCard key={`${title}-${restaurant.id}`} restaurant={restaurant} />)}</div></section>;
 }
