@@ -66,11 +66,13 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - Created canonical SQL seed at `database/restaurants_seed.sql` by combining the original Panama restaurant seed with the salchipapas seed.
 - Replaced mock restaurant data in `lib/data/restaurants.ts` with 24 restaurants based on the combined seed, including `Iconos Urban Food`, `Fogata Familiar`, and `Asu Mare`.
 - Added `website` to the `Restaurant` type and normalized recommendation matching so accents in categories do not break search matches.
+- Created review CSV `database/restaurants_serpapi_merged.csv` from `restaurantes_serpapi.csv` and `restaurantes_serpapi_v2.csv`; it deduplicates 239 source rows into 175 restaurants and removes phone, image, and Google ID columns for safer review.
 
 ### Current data model
 
 - There is no real SQL database connected yet.
 - Restaurant data is mock/local in `lib/data/restaurants.ts`, backed by the canonical future SQL seed in `database/restaurants_seed.sql`.
+- SerpApi CSV source files remain local/untracked; the tracked review file is `database/restaurants_serpapi_merged.csv`.
 - User/session/preference/favorites/history data is stored in browser `localStorage` through `lib/storage.ts`.
 - Shared data types live in `lib/types.ts`.
 
