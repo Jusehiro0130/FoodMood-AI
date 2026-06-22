@@ -1,6 +1,6 @@
 "use client";
 
-import { Sparkles, Utensils } from "lucide-react";
+import { MapPin, Sparkles, Utensils } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/app-shell";
@@ -43,9 +43,99 @@ export default function Home() {
   function goQuickSearch(query: string) { router.push(`/search?q=${encodeURIComponent(query)}`); }
   if (!ready) return <AppShell />;
 
-  return <AppShell withBottomPadding><main className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-5 sm:px-6 lg:py-8"><header className="flex items-center justify-between gap-3"><div><p className="text-sm font-bold text-[#7b5545]">Hola, Juan</p><h1 className="mt-1 text-3xl font-black leading-tight text-[#251611]">Que se te antoja hoy?</h1></div><div className="grid size-12 place-items-center rounded-2xl bg-[#fa5a2a] text-white shadow-sm"><Utensils size={22} /></div></header><SearchBox /><section className="space-y-3"><div className="flex items-center gap-2 text-sm font-black text-[#7b5545]"><Sparkles size={17} />Atajos de antojo</div><div className="flex gap-2 overflow-x-auto pb-1">{quickChips.map((chip) => <button className="shrink-0 rounded-full bg-white px-4 py-3 text-sm font-black text-[#5f463b] shadow-sm ring-1 ring-black/5" key={chip} onClick={() => goQuickSearch(chip)} type="button">{chip}</button>)}</div></section><section className="space-y-3 rounded-3xl bg-white p-4 shadow-sm"><p className="text-xs font-black uppercase tracking-[0.16em] text-[#9d7d6d]">Rango</p><h2 className="text-lg font-black">Cerca de ti</h2><RangeSelector onChange={handleRangeChange} value={range} /></section><RestaurantSection title="Para ti" restaurants={ranked.slice(0, 6)} /><RestaurantSection title="Cerca de ti" restaurants={ranked.slice(0, 4)} /><section className="space-y-3"><div className="flex items-center justify-between gap-3"><h2 className="text-xl font-black">Tus antojos frecuentes</h2><div className="hidden flex-wrap gap-2 sm:flex">{[...recurring.categories, ...recurring.ambience].slice(0, 3).map((item) => <PreferenceChip key={item} label={item} type="static" />)}</div></div><div className="grid gap-4 md:grid-cols-2">{recurringRestaurants.map((restaurant) => <RestaurantCard key={`recurring-${restaurant.id}`} restaurant={restaurant} />)}</div></section></main><BottomNav /></AppShell>;
+  return (
+    <AppShell withBottomPadding>
+      <main className="mx-auto flex max-w-5xl flex-col gap-7 px-4 py-5 sm:px-6 lg:py-8">
+        <header className="overflow-hidden rounded-[2rem] bg-[var(--foreground)] p-5 pr-20 text-[var(--background)] shadow-[var(--app-shadow)]">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-bold opacity-70">Hola, {profile.name || "Juan"}</p>
+              <h1 className="mt-1 text-3xl font-black leading-tight">Que comemos hoy?</h1>
+            </div>
+            <div className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[var(--brand)] text-white shadow-sm">
+              <Utensils size={22} />
+            </div>
+          </div>
+          <div className="mt-5 rounded-[1.35rem] bg-[var(--surface-raised)] p-1 text-[var(--foreground)] shadow-lg">
+            <SearchBox />
+          </div>
+          <div className="mt-4 flex items-center justify-between gap-3 text-xs font-bold opacity-75">
+            <span className="flex items-center gap-1">
+              <MapPin size={15} /> Panama
+            </span>
+            <span>{ranked.length} opciones listas</span>
+          </div>
+        </header>
+
+        <section className="space-y-3">
+          <div className="flex items-center gap-2 text-sm font-black text-[var(--muted)]">
+            <Sparkles size={17} />
+            Atajos de antojo
+          </div>
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {quickChips.map((chip) => (
+              <button
+                className="shrink-0 rounded-full border border-[var(--border)] bg-[var(--surface-raised)] px-4 py-3 text-sm font-black text-[var(--muted-strong)] shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--brand)]"
+                key={chip}
+                onClick={() => goQuickSearch(chip)}
+                type="button"
+              >
+                {chip}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className="space-y-3 rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface-raised)] p-4 shadow-sm backdrop-blur">
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--muted)]">Rango</p>
+              <h2 className="text-lg font-black">Cerca de ti</h2>
+            </div>
+            <p className="text-xs font-bold text-[var(--muted)]">Ranking local</p>
+          </div>
+          <RangeSelector onChange={handleRangeChange} value={range} />
+        </section>
+
+        <RestaurantSection eyebrow="Mejor match" title="Para ti" restaurants={ranked.slice(0, 6)} />
+        <RestaurantSection eyebrow="Rapido de decidir" title="Cerca de ti" restaurants={ranked.slice(0, 4)} />
+
+        <section className="space-y-3">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--muted)]">Personalizado</p>
+              <h2 className="text-xl font-black">Tus antojos frecuentes</h2>
+            </div>
+            <div className="hidden flex-wrap gap-2 sm:flex">
+              {[...recurring.categories, ...recurring.ambience].slice(0, 3).map((item) => (
+                <PreferenceChip key={item} label={item} type="static" />
+              ))}
+            </div>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {recurringRestaurants.map((restaurant) => (
+              <RestaurantCard key={`recurring-${restaurant.id}`} restaurant={restaurant} />
+            ))}
+          </div>
+        </section>
+      </main>
+      <BottomNav />
+    </AppShell>
+  );
 }
 
-function RestaurantSection({ title, restaurants }: { title: string; restaurants: ReturnType<typeof rankRestaurants> }) {
-  return <section className="space-y-3"><h2 className="text-xl font-black">{title}</h2><div className="grid gap-4 md:grid-cols-2">{restaurants.map((restaurant) => <RestaurantCard key={`${title}-${restaurant.id}`} restaurant={restaurant} />)}</div></section>;
+function RestaurantSection({ eyebrow, title, restaurants }: { eyebrow: string; title: string; restaurants: ReturnType<typeof rankRestaurants> }) {
+  return (
+    <section className="space-y-3">
+      <div>
+        <p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--muted)]">{eyebrow}</p>
+        <h2 className="text-xl font-black">{title}</h2>
+      </div>
+      <div className="grid gap-4 md:grid-cols-2">
+        {restaurants.map((restaurant) => (
+          <RestaurantCard key={`${title}-${restaurant.id}`} restaurant={restaurant} />
+        ))}
+      </div>
+    </section>
+  );
 }

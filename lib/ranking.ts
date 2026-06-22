@@ -2,7 +2,18 @@ import type { FoodIntent, MatchResult, Restaurant, SearchHistoryItem, SearchRang
 import { getRecurringUserPreferences } from "@/lib/user-preferences";
 
 export function rangeToKm(range: SearchRange) { return range === "city" ? Number.POSITIVE_INFINITY : Number(range.replace("km", "")); }
-function hasOverlap(left: string[], right: string[]) { return left.some((value) => right.includes(value)); }
+
+function normalizeMatchValue(value: string) {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+function hasOverlap(left: string[], right: string[]) {
+  const normalizedRight = new Set(right.map(normalizeMatchValue));
+  return left.some((value) => normalizedRight.has(normalizeMatchValue(value)));
+}
 
 export function calculateRestaurantMatch(restaurant: Restaurant, userProfile: UserProfile, foodIntent: FoodIntent | null, selectedRange: SearchRange, searchHistory: SearchHistoryItem[] = []): MatchResult {
   let score = 0;
