@@ -28,6 +28,7 @@ export type Restaurant = {
   distanceKm: number;
   rating: number;
   openingHours: string;
+  website?: string;
   imageUrl?: string;
   latitude?: number;
   longitude?: number;

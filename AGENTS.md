@@ -1,4 +1,4 @@
-# FoodMood AI — Agent Instructions
+# FoodMood AI - Agent Instructions
 
 ## General rules
 
@@ -50,7 +50,7 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 
 - Active branch: `feature/ui-polish`.
 - Open PR: `https://github.com/Jusehiro0130/FoodMood-AI/pull/4`.
-- Latest pushed commit before this memory update: `a71b572 Add dark theme and mobile app polish`.
+- Latest pushed commit before this memory update: `85e469a Document project working memory`.
 - Latest Vercel preview status: `READY`.
 - Latest preview URL: `https://food-mood-qode7y1hq-jusehiro0130-7374s-projects.vercel.app`.
 - Production URL `https://food-mood-ai.vercel.app` can show `DEPLOYMENT_NOT_FOUND` until the PR is merged to `main` and production deploys successfully.
@@ -63,11 +63,14 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - Added light/dark theme support with `components/theme-toggle.tsx`.
 - Theme preference is stored in `localStorage` under `foodmood.theme`.
 - Added CSS design tokens and safe-area handling to make the web app easier to port toward PWA/iOS later.
+- Created canonical SQL seed at `database/restaurants_seed.sql` by combining the original Panama restaurant seed with the salchipapas seed.
+- Replaced mock restaurant data in `lib/data/restaurants.ts` with 24 restaurants based on the combined seed, including `Iconos Urban Food`, `Fogata Familiar`, and `Asu Mare`.
+- Added `website` to the `Restaurant` type and normalized recommendation matching so accents in categories do not break search matches.
 
 ### Current data model
 
 - There is no real SQL database connected yet.
-- Restaurant data is mock/local in `lib/data/restaurants.ts`.
+- Restaurant data is mock/local in `lib/data/restaurants.ts`, backed by the canonical future SQL seed in `database/restaurants_seed.sql`.
 - User/session/preference/favorites/history data is stored in browser `localStorage` through `lib/storage.ts`.
 - Shared data types live in `lib/types.ts`.
 
