@@ -48,12 +48,11 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 
 ### Current status
 
-- Active branch: `feature/ui-polish`.
-- Open PR: `https://github.com/Jusehiro0130/FoodMood-AI/pull/4`.
-- Latest pushed app-data commit before this memory update: `fae771f Add combined restaurant seed data`.
-- Latest Vercel preview status: `READY`.
-- Latest verified preview for the combined restaurant seed: `https://food-mood-8lgsbqyh2-jusehiro0130-7374s-projects.vercel.app`.
-- Production URL `https://food-mood-ai.vercel.app` can show `DEPLOYMENT_NOT_FOUND` until the PR is merged to `main` and production deploys successfully.
+- Active branch: `main`.
+- Feature branch `feature/ui-polish` was merged into `main`.
+- Latest main merge commit before this memory update: `a100c1c Merge feature/ui-polish into main`.
+- Latest Vercel production deploy status at merge time: `QUEUED` for commit `a100c1c`.
+- Production URL: `https://food-mood-ai.vercel.app`.
 
 ### Recent work
 
