@@ -46,20 +46,20 @@ export default function Home() {
   return (
     <AppShell withBottomPadding>
       <main className="mx-auto flex max-w-5xl flex-col gap-7 px-4 py-5 sm:px-6 lg:py-8">
-        <header className="overflow-hidden rounded-[2rem] bg-[#251611] p-5 text-white shadow-[0_22px_60px_rgba(37,22,17,0.18)]">
+        <header className="overflow-hidden rounded-[2rem] bg-[var(--foreground)] p-5 pr-20 text-[var(--background)] shadow-[var(--app-shadow)]">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-bold text-white/70">Hola, {profile.name || "Juan"}</p>
+              <p className="text-sm font-bold opacity-70">Hola, {profile.name || "Juan"}</p>
               <h1 className="mt-1 text-3xl font-black leading-tight">Que comemos hoy?</h1>
             </div>
-            <div className="grid size-12 place-items-center rounded-2xl bg-[#fa5a2a] text-white shadow-sm">
+            <div className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[var(--brand)] text-white shadow-sm">
               <Utensils size={22} />
             </div>
           </div>
-          <div className="mt-5 rounded-[1.35rem] bg-white p-1 text-[#251611] shadow-lg">
+          <div className="mt-5 rounded-[1.35rem] bg-[var(--surface-raised)] p-1 text-[var(--foreground)] shadow-lg">
             <SearchBox />
           </div>
-          <div className="mt-4 flex items-center justify-between gap-3 text-xs font-bold text-white/72">
+          <div className="mt-4 flex items-center justify-between gap-3 text-xs font-bold opacity-75">
             <span className="flex items-center gap-1">
               <MapPin size={15} /> Panama
             </span>
@@ -68,14 +68,14 @@ export default function Home() {
         </header>
 
         <section className="space-y-3">
-          <div className="flex items-center gap-2 text-sm font-black text-[#7b5545]">
+          <div className="flex items-center gap-2 text-sm font-black text-[var(--muted)]">
             <Sparkles size={17} />
             Atajos de antojo
           </div>
           <div className="flex gap-2 overflow-x-auto pb-1">
             {quickChips.map((chip) => (
               <button
-                className="shrink-0 rounded-full bg-white px-4 py-3 text-sm font-black text-[#5f463b] shadow-sm ring-1 ring-black/5 transition hover:-translate-y-0.5 hover:shadow-md"
+                className="shrink-0 rounded-full border border-[var(--border)] bg-[var(--surface-raised)] px-4 py-3 text-sm font-black text-[var(--muted-strong)] shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--brand)]"
                 key={chip}
                 onClick={() => goQuickSearch(chip)}
                 type="button"
@@ -86,13 +86,13 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="space-y-3 rounded-[1.5rem] border border-[#ead6c4] bg-white/90 p-4 shadow-sm backdrop-blur">
+        <section className="space-y-3 rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface-raised)] p-4 shadow-sm backdrop-blur">
           <div className="flex items-end justify-between gap-3">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#9d7d6d]">Rango</p>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--muted)]">Rango</p>
               <h2 className="text-lg font-black">Cerca de ti</h2>
             </div>
-            <p className="text-xs font-bold text-[#7b5545]">Ranking local</p>
+            <p className="text-xs font-bold text-[var(--muted)]">Ranking local</p>
           </div>
           <RangeSelector onChange={handleRangeChange} value={range} />
         </section>
@@ -103,7 +103,7 @@ export default function Home() {
         <section className="space-y-3">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#9d7d6d]">Personalizado</p>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--muted)]">Personalizado</p>
               <h2 className="text-xl font-black">Tus antojos frecuentes</h2>
             </div>
             <div className="hidden flex-wrap gap-2 sm:flex">
@@ -128,7 +128,7 @@ function RestaurantSection({ eyebrow, title, restaurants }: { eyebrow: string; t
   return (
     <section className="space-y-3">
       <div>
-        <p className="text-xs font-black uppercase tracking-[0.16em] text-[#9d7d6d]">{eyebrow}</p>
+        <p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--muted)]">{eyebrow}</p>
         <h2 className="text-xl font-black">{title}</h2>
       </div>
       <div className="grid gap-4 md:grid-cols-2">

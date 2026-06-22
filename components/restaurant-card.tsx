@@ -30,7 +30,7 @@ export function RestaurantCard({ restaurant, onFavoriteChange }: RestaurantCardP
   const swatch = swatches[restaurant.id.length % swatches.length];
 
   return (
-    <article className="overflow-hidden rounded-[1.75rem] border border-black/5 bg-white shadow-[0_18px_48px_rgba(37,22,17,0.08)]">
+    <article className="overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface-raised)] shadow-[var(--app-shadow)]">
       <div className={`relative min-h-40 bg-gradient-to-br ${swatch} p-4 text-white`}>
         <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.18),transparent_32%),radial-gradient(circle_at_85%_20%,rgba(255,255,255,0.24),transparent_22%)]" />
         <div className="relative flex items-start justify-between gap-3">
@@ -50,19 +50,19 @@ export function RestaurantCard({ restaurant, onFavoriteChange }: RestaurantCardP
       </div>
 
       <div className="space-y-4 p-4">
-        <div className="grid grid-cols-3 gap-2 text-center text-xs font-black text-[#5f463b]">
-          <span className="rounded-2xl bg-[#fff0df] px-2 py-3">{restaurant.priceLevel}</span>
-          <span className="flex items-center justify-center gap-1 rounded-2xl bg-[#f2eadf] px-2 py-3">
+        <div className="grid grid-cols-3 gap-2 text-center text-xs font-black text-[var(--muted-strong)]">
+          <span className="rounded-2xl bg-[var(--warning-soft)] px-2 py-3">{restaurant.priceLevel}</span>
+          <span className="flex items-center justify-center gap-1 rounded-2xl bg-[var(--surface-muted)] px-2 py-3">
             <Star size={14} fill="currentColor" /> {restaurant.rating.toFixed(1)}
           </span>
-          <span className="flex items-center justify-center gap-1 rounded-2xl bg-[#eef7f0] px-2 py-3 text-[#2f7d62]">
+          <span className="flex items-center justify-center gap-1 rounded-2xl bg-[var(--accent-soft)] px-2 py-3 text-[var(--accent)]">
             <MapPin size={14} /> {restaurant.distanceKm.toFixed(1)} km
           </span>
         </div>
 
-        <p className="text-sm leading-6 text-[#5f463b]">{restaurant.match.reasons[0] ?? restaurant.description}</p>
+        <p className="text-sm leading-6 text-[var(--muted-strong)]">{restaurant.match.reasons[0] ?? restaurant.description}</p>
 
-        <div className="flex items-center justify-between gap-3 border-t border-[#f0dfce] pt-4 text-xs font-bold text-[#7b5545]">
+        <div className="flex items-center justify-between gap-3 border-t border-[var(--border)] pt-4 text-xs font-bold text-[var(--muted)]">
           <span className="flex min-w-0 items-center gap-1 truncate">
             <MessageCircle size={15} /> {restaurant.instagram}
           </span>
@@ -75,14 +75,14 @@ export function RestaurantCard({ restaurant, onFavoriteChange }: RestaurantCardP
           <button
             aria-label={saved ? "Quitar de guardados" : "Guardar restaurante"}
             className={`grid min-h-12 place-items-center rounded-2xl border px-4 transition ${
-              saved ? "border-[#fa5a2a] bg-[#fa5a2a] text-white" : "border-[#ead6c4] bg-white text-[#7b5545]"
+              saved ? "border-[var(--brand)] bg-[var(--brand)] text-white" : "border-[var(--border)] bg-[var(--surface-raised)] text-[var(--muted)]"
             }`}
             onClick={handleFavorite}
             type="button"
           >
             <Heart fill={saved ? "currentColor" : "none"} size={20} />
           </button>
-          <Link className="grid min-h-12 place-items-center rounded-2xl bg-[#251611] px-4 text-sm font-black text-white" href={`/restaurant/${restaurant.id}`}>
+          <Link className="grid min-h-12 place-items-center rounded-2xl bg-[var(--foreground)] px-4 text-sm font-black text-[var(--background)]" href={`/restaurant/${restaurant.id}`}>
             Ver detalle
           </Link>
         </div>

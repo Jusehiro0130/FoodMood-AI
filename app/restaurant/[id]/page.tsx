@@ -70,8 +70,8 @@ export default function RestaurantDetailPage() {
           </div>
         </section>
 
-        <section className="-mt-10 space-y-5 rounded-t-[2rem] bg-[#fff8f0] px-5 pt-6">
-          <div className="grid grid-cols-3 gap-2 rounded-[1.5rem] bg-white p-2 shadow-[0_16px_40px_rgba(37,22,17,0.08)]">
+        <section className="-mt-10 space-y-5 rounded-t-[2rem] bg-[var(--background)] px-5 pt-6">
+          <div className="grid grid-cols-3 gap-2 rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface-raised)] p-2 shadow-[var(--app-shadow)]">
             <Metric icon={<Star size={16} fill="currentColor" />} label="Rating" value={restaurant.rating.toFixed(1)} />
             <Metric icon={<MapPin size={16} />} label="Distancia" value={`${restaurant.distanceKm.toFixed(1)} km`} />
             <Metric icon={<Clock size={16} />} label="Precio" value={restaurant.priceLevel} />
@@ -84,8 +84,8 @@ export default function RestaurantDetailPage() {
             <Info label="Direccion" value={restaurant.address} />
           </div>
 
-          <div className="rounded-[1.5rem] bg-white p-4 shadow-sm">
-            <div className="grid gap-3 text-sm font-bold text-[#5f463b]">
+          <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface-raised)] p-4 shadow-sm">
+            <div className="grid gap-3 text-sm font-bold text-[var(--muted-strong)]">
               <span className="flex items-center gap-2">
                 <MessageCircle size={17} /> {restaurant.instagram}
               </span>
@@ -98,29 +98,29 @@ export default function RestaurantDetailPage() {
             </div>
           </div>
 
-          <div className="rounded-[1.5rem] bg-[#251611] p-4 text-white">
+          <div className="rounded-[1.5rem] bg-[var(--foreground)] p-4 text-[var(--background)]">
             <p className="text-xs font-black uppercase tracking-[0.16em] text-white/60">Razon de recomendacion</p>
             <p className="mt-2 text-base font-bold leading-7">{match.reasons.join(". ") || "Buena opcion segun tus gustos y rango actual."}</p>
           </div>
         </section>
 
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-black/10 bg-[#fff8f0]/95 p-4 backdrop-blur">
+        <div className="app-bottom-safe fixed inset-x-0 bottom-0 z-40 border-t border-[var(--border)] bg-[var(--background)] p-4 backdrop-blur">
           <div className="mx-auto grid max-w-3xl grid-cols-[auto_1fr_1fr] gap-2">
             <button
               aria-label={saved ? "Quitar de guardados" : "Guardar restaurante"}
               className={`grid min-h-14 place-items-center rounded-2xl px-4 ${
-                saved ? "bg-[#fa5a2a] text-white" : "bg-white text-[#251611] shadow-sm"
+                saved ? "bg-[var(--brand)] text-white" : "bg-[var(--surface-raised)] text-[var(--foreground)] shadow-sm"
               }`}
               onClick={toggleFavorite}
               type="button"
             >
               <Heart fill={saved ? "currentColor" : "none"} size={20} />
             </button>
-            <a className="flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#251611] px-4 text-sm font-black text-white" href={instagramUrl} rel="noreferrer" target="_blank">
+            <a className="flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[var(--foreground)] px-4 text-sm font-black text-[var(--background)]" href={instagramUrl} rel="noreferrer" target="_blank">
               <MessageCircle size={18} />
               Instagram
             </a>
-            <a className="flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-white px-4 text-sm font-black text-[#251611] shadow-sm" href={`https://maps.google.com/?q=${encodeURIComponent(restaurant.address)}`} rel="noreferrer" target="_blank">
+            <a className="flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[var(--surface-raised)] px-4 text-sm font-black text-[var(--foreground)] shadow-sm" href={`https://maps.google.com/?q=${encodeURIComponent(restaurant.address)}`} rel="noreferrer" target="_blank">
               <Navigation size={18} />
               Llegar
             </a>
@@ -133,19 +133,19 @@ export default function RestaurantDetailPage() {
 
 function Metric({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   return (
-    <div className="rounded-2xl bg-[#fff8f0] px-2 py-3 text-center">
-      <div className="mx-auto flex items-center justify-center gap-1 text-[#fa5a2a]">{icon}</div>
-      <p className="mt-1 text-[0.68rem] font-black uppercase tracking-[0.12em] text-[#9d7d6d]">{label}</p>
-      <p className="text-sm font-black text-[#251611]">{value}</p>
+    <div className="rounded-2xl bg-[var(--surface-muted)] px-2 py-3 text-center">
+      <div className="mx-auto flex items-center justify-center gap-1 text-[var(--brand)]">{icon}</div>
+      <p className="mt-1 text-[0.68rem] font-black uppercase tracking-[0.12em] text-[var(--muted)]">{label}</p>
+      <p className="text-sm font-black text-[var(--foreground)]">{value}</p>
     </div>
   );
 }
 
 function Info({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-[1.5rem] bg-white p-4 shadow-sm">
-      <p className="text-xs font-black uppercase tracking-[0.14em] text-[#9d7d6d]">{label}</p>
-      <p className="mt-2 text-sm font-black leading-6 text-[#251611]">{value}</p>
+    <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface-raised)] p-4 shadow-sm">
+      <p className="text-xs font-black uppercase tracking-[0.14em] text-[var(--muted)]">{label}</p>
+      <p className="mt-2 text-sm font-black leading-6 text-[var(--foreground)]">{value}</p>
     </div>
   );
 }
