@@ -91,6 +91,7 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - Added Supabase Google Auth redirect flow without new dependencies because `corepack pnpm add @supabase/supabase-js` repeatedly timed out locally.
 - Added `/api/auth/session` to validate Supabase access tokens server-side and assign `admin` from private comma-separated `FOODMOOD_ADMIN_EMAILS`.
 - Added admin visibility in profile and a client-side admin gate for `/admin/restaurants`.
+- Restyled restaurant cards to the compact dark "Concepto B - etiqueta colgante" pattern requested by the user: orange circular food icon, lowercase restaurant title, match percentage, and compact distance/price/rating row.
 
 ### Current data model
 

@@ -1,18 +1,10 @@
 "use client";
 
-import { Clock, Heart, MapPin, MessageCircle, Star } from "lucide-react";
+import { Heart, MapPin, Star, Utensils } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { MatchBadge } from "@/components/match-badge";
 import { storage } from "@/lib/storage";
 import type { RankedRestaurant } from "@/lib/types";
-
-const swatches = [
-  "from-[#fa5a2a] via-[#ffb454] to-[#2f7d62]",
-  "from-[#251611] via-[#8d4d32] to-[#f0b85b]",
-  "from-[#2f7d62] via-[#75b798] to-[#f5c84c]",
-  "from-[#7a3d1d] via-[#fa7a45] to-[#ffe0a3]",
-];
 
 type RestaurantCardProps = { restaurant: RankedRestaurant; onFavoriteChange?: () => void };
 
@@ -27,64 +19,47 @@ export function RestaurantCard({ restaurant, onFavoriteChange }: RestaurantCardP
     onFavoriteChange?.();
   }
 
-  const swatch = swatches[restaurant.id.length % swatches.length];
-
   return (
-    <article className="overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface-raised)] shadow-[var(--app-shadow)]">
-      <div className={`relative min-h-40 bg-gradient-to-br ${swatch} p-4 text-white`}>
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.18),transparent_32%),radial-gradient(circle_at_85%_20%,rgba(255,255,255,0.24),transparent_22%)]" />
-        <div className="relative flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/80">{restaurant.zone}</p>
-            <h3 className="mt-2 text-2xl font-black leading-tight">{restaurant.name}</h3>
+    <article className="space-y-2">
+      <p className="px-1 text-[0.68rem] font-black uppercase tracking-[0.18em] text-[var(--muted)]">Concepto B - etiqueta colgante</p>
+      <div className="relative overflow-hidden rounded-t-[1.1rem] rounded-b-[0.55rem] bg-[#1c130f] p-3 text-[#fff7ed] shadow-[0_14px_30px_rgba(28,19,15,0.18)]">
+        <Link aria-label={`Ver detalle de ${restaurant.name}`} className="absolute inset-0" href={`/restaurant/${restaurant.id}`} />
+        <div className="relative grid grid-cols-[3.65rem_1fr_auto] items-center gap-3">
+          <div className="grid size-14 place-items-center rounded-full border border-dashed border-[#ffd45f] bg-[#ff5a1f] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.18)]">
+            <Utensils size={23} strokeWidth={2.6} />
           </div>
-          <MatchBadge score={restaurant.match.score} />
+
+          <div className="min-w-0">
+            <h3 className="truncate text-base font-black leading-tight text-white">{restaurant.name.toLowerCase()}</h3>
+            <p className="mt-1 truncate text-xs font-bold text-[#c9b7a9]">{restaurant.categories[0]?.toLowerCase() ?? restaurant.zone.toLowerCase()}</p>
+          </div>
+
+          <div className="text-right">
+            <p className="text-xl font-black leading-none text-[#ff9d21]">{restaurant.match.score}%</p>
+            <p className="mt-1 text-[0.65rem] font-bold text-[#b9a89b]">match</p>
+          </div>
         </div>
-        <div className="relative mt-6 flex flex-wrap gap-2">
-          {restaurant.categories.slice(0, 3).map((category) => (
-            <span className="rounded-full bg-white/18 px-3 py-1 text-xs font-black text-white backdrop-blur" key={category}>
-              {category}
+
+        <div className="relative mt-3 flex items-center justify-between gap-3 border-t border-dashed border-[#5a4337] pt-2">
+          <div className="flex min-w-0 items-center gap-3 text-[0.7rem] font-black">
+            <span className="flex items-center gap-1 text-[#35d07f]">
+              <MapPin size={12} /> {restaurant.distanceKm.toFixed(1)} km
             </span>
-          ))}
-        </div>
-      </div>
-
-      <div className="space-y-4 p-4">
-        <div className="grid grid-cols-3 gap-2 text-center text-xs font-black text-[var(--muted-strong)]">
-          <span className="rounded-2xl bg-[var(--warning-soft)] px-2 py-3">{restaurant.priceLevel}</span>
-          <span className="flex items-center justify-center gap-1 rounded-2xl bg-[var(--surface-muted)] px-2 py-3">
-            <Star size={14} fill="currentColor" /> {restaurant.rating.toFixed(1)}
-          </span>
-          <span className="flex items-center justify-center gap-1 rounded-2xl bg-[var(--accent-soft)] px-2 py-3 text-[var(--accent)]">
-            <MapPin size={14} /> {restaurant.distanceKm.toFixed(1)} km
-          </span>
-        </div>
-
-        <p className="text-sm leading-6 text-[var(--muted-strong)]">{restaurant.match.reasons[0] ?? restaurant.description}</p>
-
-        <div className="flex items-center justify-between gap-3 border-t border-[var(--border)] pt-4 text-xs font-bold text-[var(--muted)]">
-          <span className="flex min-w-0 items-center gap-1 truncate">
-            <MessageCircle size={15} /> {restaurant.instagram}
-          </span>
-          <span className="flex shrink-0 items-center gap-1">
-            <Clock size={15} /> Hoy abierto
-          </span>
-        </div>
-
-        <div className="grid grid-cols-[auto_1fr] gap-2">
+            <span className="text-[#ff9d21]">{restaurant.priceLevel}</span>
+            <span className="flex items-center gap-1 text-[#ff9d21]">
+              <Star fill="currentColor" size={12} /> {restaurant.rating.toFixed(1)}
+            </span>
+          </div>
           <button
             aria-label={saved ? "Quitar de guardados" : "Guardar restaurante"}
-            className={`grid min-h-12 place-items-center rounded-2xl border px-4 transition ${
-              saved ? "border-[var(--brand)] bg-[var(--brand)] text-white" : "border-[var(--border)] bg-[var(--surface-raised)] text-[var(--muted)]"
+            className={`relative z-10 grid size-8 place-items-center rounded-full transition ${
+              saved ? "bg-[#ff5a1f] text-white" : "bg-white/8 text-[#c9b7a9] hover:bg-white/14"
             }`}
             onClick={handleFavorite}
             type="button"
           >
-            <Heart fill={saved ? "currentColor" : "none"} size={20} />
+            <Heart fill={saved ? "currentColor" : "none"} size={16} />
           </button>
-          <Link className="grid min-h-12 place-items-center rounded-2xl bg-[var(--foreground)] px-4 text-sm font-black text-[var(--background)]" href={`/restaurant/${restaurant.id}`}>
-            Ver detalle
-          </Link>
         </div>
       </div>
     </article>
