@@ -21,7 +21,14 @@ export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [profile, setProfile] = useState<UserProfile>(defaultProfile);
-  useEffect(() => { if (!storage.getSession()) storage.createDemoSession(); setProfile(storage.getProfile() ?? defaultProfile); }, []);
+  useEffect(() => {
+    const session = storage.getSession();
+    if (!session) {
+      router.replace("/login");
+      return;
+    }
+    setProfile(storage.getProfile() ?? { ...defaultProfile, id: session.userId, name: session.name });
+  }, [router]);
   const currentStep = steps[step];
   const progress = Math.round(((step + 1) / steps.length) * 100);
   function toggleArrayValue(field: "favoriteCategories" | "preferredAmbience" | "restrictions", value: string) { setProfile((current) => { const selected = current[field]; const next = selected.includes(value) && selected.length > 1 ? selected.filter((item) => item !== value) : Array.from(new Set([...selected.filter((item) => !(value === "Ninguna" && item !== value)), value])); return { ...current, [field]: value !== "Ninguna" ? next.filter((item) => item !== "Ninguna") : ["Ninguna"] }; }); }

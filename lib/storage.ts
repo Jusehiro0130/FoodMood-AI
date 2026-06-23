@@ -28,9 +28,11 @@ export const defaultProfile: UserProfile = {
 };
 
 export const storage = {
-  createDemoSession() { const session: DemoSession = { userId: "demo-user", name: "Juan", createdAt: new Date().toISOString(), provider: "demo", role: "user" }; writeJson(keys.session, session); return session; },
   saveSession(session: DemoSession) { writeJson(keys.session, session); return session; },
-  getSession() { return readJson<DemoSession | null>(keys.session, null); },
+  getSession() {
+    const session = readJson<DemoSession | null>(keys.session, null);
+    return session?.provider === "google" ? session : null;
+  },
   clearSession() { if (canUseStorage()) window.localStorage.removeItem(keys.session); },
   getProfile() { return readJson<UserProfile | null>(keys.profile, null); },
   saveProfile(profile: UserProfile) { writeJson(keys.profile, profile); },

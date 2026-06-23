@@ -42,7 +42,9 @@ export default function AuthCallbackPage() {
         provider: "google",
         role: data.user.role,
       });
-      storage.saveProfile({ ...defaultProfile, id: data.user.id, name: data.user.name });
+      if (!storage.getProfile()) {
+        storage.saveProfile({ ...defaultProfile, id: data.user.id, name: data.user.name });
+      }
       router.replace(storage.isOnboardingCompleted() ? "/" : "/onboarding");
     }
 
