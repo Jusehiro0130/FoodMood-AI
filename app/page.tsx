@@ -10,8 +10,10 @@ import { RangeSelector } from "@/components/range-selector";
 import { RestaurantCard } from "@/components/restaurant-card";
 import { SearchBox } from "@/components/search-box";
 import { parseFoodIntent } from "@/lib/ai/parse-food-intent";
+import { withLiveRestaurantDistances } from "@/lib/location";
 import { rankRestaurants } from "@/lib/ranking";
 import { defaultProfile, storage } from "@/lib/storage";
+import { useLiveLocation } from "@/lib/use-live-location";
 import { getRecurringUserPreferences } from "@/lib/user-preferences";
 import { useRestaurants } from "@/lib/use-restaurants";
 import type { SearchHistoryItem, SearchRange, UserProfile } from "@/lib/types";
@@ -25,6 +27,7 @@ export default function Home() {
   const [history, setHistory] = useState<SearchHistoryItem[]>([]);
   const [ready, setReady] = useState(false);
   const { restaurants } = useRestaurants();
+  const liveLocation = useLiveLocation();
 
   useEffect(() => {
     if (!storage.getSession()) { router.replace("/login"); return; }
@@ -35,10 +38,11 @@ export default function Home() {
     setReady(true);
   }, [router]);
 
-  const ranked = useMemo(() => rankRestaurants(restaurants, profile, null, range, history), [profile, range, history]);
+  const restaurantsWithDistance = useMemo(() => withLiveRestaurantDistances(restaurants, liveLocation.location), [restaurants, liveLocation.location]);
+  const ranked = useMemo(() => rankRestaurants(restaurantsWithDistance, profile, null, range, history), [restaurantsWithDistance, profile, range, history]);
   const recurring = useMemo(() => getRecurringUserPreferences(history), [history]);
   const recurringIntent = useMemo(() => recurring.categories.length || recurring.ambience.length || recurring.budget ? { query: "Tus antojos frecuentes", categories: recurring.categories, mood: recurring.ambience, budget: recurring.budget, distancePreference: "anywhere" as const, keywords: [...recurring.categories, ...recurring.ambience] } : parseFoodIntent("salchipapa barata cerca"), [recurring]);
-  const recurringRestaurants = useMemo(() => rankRestaurants(restaurants, profile, recurringIntent, range, history).slice(0, 5), [profile, recurringIntent, range, history]);
+  const recurringRestaurants = useMemo(() => rankRestaurants(restaurantsWithDistance, profile, recurringIntent, range, history).slice(0, 5), [restaurantsWithDistance, profile, recurringIntent, range, history]);
 
   function handleRangeChange(nextRange: SearchRange) { setRange(nextRange); storage.saveRange(nextRange); }
   function goQuickSearch(query: string) { router.push(`/search?q=${encodeURIComponent(query)}`); }
@@ -96,6 +100,22 @@ export default function Home() {
             <p className="text-xs font-bold text-[var(--muted)]">Ranking local</p>
           </div>
           <RangeSelector onChange={handleRangeChange} value={range} />
+          <div className="flex flex-col gap-3 rounded-2xl bg-[var(--surface-muted)] p-3 text-sm font-bold text-[var(--muted-strong)] sm:flex-row sm:items-center sm:justify-between">
+            <span>
+              {liveLocation.status === "watching"
+                ? `Ubicacion activa +/- ${Math.round(liveLocation.location?.accuracy ?? 0)} m`
+                : liveLocation.status === "denied"
+                  ? "Permiso de ubicacion denegado"
+                  : "Activa tu ubicacion para que 2, 5 y 10 km sean reales"}
+            </span>
+            <button
+              className="min-h-11 rounded-2xl bg-[var(--foreground)] px-4 text-sm font-black text-[var(--background)]"
+              onClick={liveLocation.status === "watching" ? liveLocation.stop : liveLocation.request}
+              type="button"
+            >
+              {liveLocation.status === "watching" ? "Pausar ubicacion" : liveLocation.status === "requesting" ? "Solicitando..." : "Usar mi ubicacion"}
+            </button>
+          </div>
         </section>
 
         <RestaurantSection eyebrow="Mejor match" title="Para ti" restaurants={ranked.slice(0, 6)} />

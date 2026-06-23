@@ -1,7 +1,24 @@
 export type BudgetLevel = "$" | "$$" | "$$$" | "$$$$";
 export type SearchRange = "2km" | "5km" | "10km" | "city";
+export type AppRole = "user" | "admin";
 
-export type DemoSession = { userId: string; name: string; createdAt: string };
+export type DemoSession = {
+  userId: string;
+  name: string;
+  createdAt: string;
+  provider?: "demo" | "google";
+  email?: string;
+  avatarUrl?: string;
+  accessToken?: string;
+  role?: AppRole;
+};
+
+export type UserLocation = {
+  latitude: number;
+  longitude: number;
+  accuracy?: number;
+  updatedAt: string;
+};
 
 export type UserProfile = {
   id: string;
