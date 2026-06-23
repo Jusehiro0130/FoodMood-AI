@@ -48,7 +48,7 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 
 ### Current status
 
-- Active branch: `feature/auth-location-admin`.
+- Active branch: `main`.
 - Preview comparison branch: `preview/supabase-data-demo`.
 - Latest Supabase data preview URL: `https://food-mood-ibjz1z1k9-jusehiro0130-7374s-projects.vercel.app`.
 - Latest data foundation commit before this memory update: `1259d80 Update memory for data foundation preview`.
@@ -58,6 +58,9 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - Latest main merge commit before this memory update: `a100c1c Merge feature/ui-polish into main`.
 - Latest Vercel production deploy status: `READY` for commit `1cabccf Update memory after main merge`.
 - Production URL: `https://food-mood-ai.vercel.app`.
+- Latest main merge commit before this memory update: `b2d710c Merge auth location admin into main`.
+- Latest Vercel production deploy status: `READY` for commit `b2d710c4912857f360d75a1f2f0f8f9eeaaf584c`.
+- Latest production deployment URL: `https://food-mood-6h34ztsem-jusehiro0130-7374s-projects.vercel.app`.
 
 ### Recent work
 
