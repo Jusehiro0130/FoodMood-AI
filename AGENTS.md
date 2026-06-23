@@ -95,6 +95,7 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - Removed the demo login button so Google Auth is the primary entry path.
 - Added Supabase table `foodmood_users` through migration `create_foodmood_users_auth`; authenticated users are remembered there after Google login.
 - `foodmood_users` has RLS enabled and protects `role` from user self-escalation; admin can be assigned by SQL role update or by `FOODMOOD_ADMIN_EMAILS`.
+- Added `/api/auth/config` so login can use server-side `SUPABASE_URL`; `NEXT_PUBLIC_SUPABASE_URL` is no longer required just to enable the Google button.
 
 ### Current data model
 

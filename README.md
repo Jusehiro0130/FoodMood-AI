@@ -39,7 +39,7 @@ Copy `.env.example` to `.env.local` when you want integrations. Supabase and Ope
 
 When `SUPABASE_URL` and `SUPABASE_ANON_KEY` are configured, `/api/restaurants` reads from the Supabase Postgres view `foodmood_restaurants_app`. Without them, the app falls back to `lib/data/restaurants.ts`.
 
-Google login uses Supabase Auth. Configure `NEXT_PUBLIC_SUPABASE_URL` for the browser redirect and keep `SUPABASE_ANON_KEY` available server-side so `/api/auth/session` can validate the token. Users are remembered in the Supabase table `foodmood_users` after login.
+Google login uses Supabase Auth. Configure `SUPABASE_URL` server-side for the login redirect and keep `SUPABASE_ANON_KEY` available server-side so `/api/auth/session` can validate the token. `NEXT_PUBLIC_SUPABASE_URL` is optional because `/api/auth/config` exposes only the safe public Supabase URL to the login screen. Users are remembered in the Supabase table `foodmood_users` after login.
 
 Admin users can be created in either of two ways:
 

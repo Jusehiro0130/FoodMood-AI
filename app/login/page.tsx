@@ -1,16 +1,26 @@
 "use client";
 
 import { User, Utensils } from "lucide-react";
+import { useState } from "react";
 import { AppShell } from "@/components/app-shell";
-import { getGoogleLoginUrl, isSupabaseAuthConfigured } from "@/lib/auth/supabase-auth";
+import { getGoogleLoginUrl } from "@/lib/auth/supabase-auth";
 
 export default function LoginPage() {
-  const googleEnabled = isSupabaseAuthConfigured();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  function enterWithGoogle() {
-    const loginUrl = getGoogleLoginUrl(window.location.origin);
-    if (!loginUrl) return;
-    window.location.href = loginUrl;
+  async function enterWithGoogle() {
+    setLoading(true);
+    setError("");
+    const response = await fetch("/api/auth/config", { cache: "no-store" });
+    if (!response.ok) {
+      setLoading(false);
+      setError("Falta configurar SUPABASE_URL en Vercel.");
+      return;
+    }
+    const data = await response.json() as { supabaseUrl: string };
+    const loginUrl = getGoogleLoginUrl(window.location.origin, data.supabaseUrl);
+    if (loginUrl) window.location.href = loginUrl;
   }
 
   return (
@@ -30,19 +40,19 @@ export default function LoginPage() {
           <div className="space-y-3">
             <button
               className="flex min-h-14 w-full items-center justify-center gap-3 rounded-2xl bg-[var(--foreground)] px-5 text-base font-black text-[var(--background)] shadow-sm disabled:opacity-50"
-              disabled={!googleEnabled}
+              disabled={loading}
               onClick={enterWithGoogle}
               type="button"
             >
               <User size={20} />
-              Continuar con Google
+              {loading ? "Conectando..." : "Continuar con Google"}
             </button>
           </div>
 
           <p className="text-center text-xs font-semibold leading-5 text-[var(--muted)]">
             Inicia sesion con Google para guardar tus gustos y tu historial en FoodMood.
           </p>
-          {!googleEnabled ? <p className="text-center text-xs font-black text-[var(--brand)]">Falta configurar NEXT_PUBLIC_SUPABASE_URL.</p> : null}
+          {error ? <p className="text-center text-xs font-black text-[var(--brand)]">{error}</p> : null}
         </section>
       </main>
     </AppShell>

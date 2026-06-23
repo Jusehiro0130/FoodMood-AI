@@ -6,16 +6,8 @@ type SupabaseAuthTokens = {
   expiresAt?: number;
 };
 
-function getSupabaseUrl() {
-  return process.env.NEXT_PUBLIC_SUPABASE_URL;
-}
-
-export function isSupabaseAuthConfigured() {
-  return Boolean(getSupabaseUrl());
-}
-
-export function getGoogleLoginUrl(origin: string) {
-  const supabaseUrl = getSupabaseUrl();
+export function getGoogleLoginUrl(origin: string, configuredSupabaseUrl?: string) {
+  const supabaseUrl = configuredSupabaseUrl ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
   if (!supabaseUrl) return null;
   const redirectTo = `${origin}/auth/callback`;
   const url = new URL(`${supabaseUrl.replace(/\/$/, "")}/auth/v1/authorize`);
