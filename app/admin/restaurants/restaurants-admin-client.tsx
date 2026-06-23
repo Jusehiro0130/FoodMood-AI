@@ -1,7 +1,9 @@
 "use client";
 
-import { Database, Filter, Search, Star } from "lucide-react";
-import { useMemo, useState } from "react";
+import { Database, Filter, Lock, Search, Star } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { storage } from "@/lib/storage";
 import type { Restaurant, RestaurantDataSource } from "@/lib/types";
 
 type AdminRestaurantsClientProps = {
@@ -12,6 +14,13 @@ type AdminRestaurantsClientProps = {
 export function AdminRestaurantsClient({ restaurants, source }: AdminRestaurantsClientProps) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("Todas");
+  const [allowed, setAllowed] = useState(false);
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    setAllowed(storage.getSession()?.role === "admin");
+    setChecked(true);
+  }, []);
 
   const categories = useMemo(() => {
     const values = new Set<string>();
@@ -33,6 +42,26 @@ export function AdminRestaurantsClient({ restaurants, source }: AdminRestaurants
   }, [category, query, restaurants]);
 
   const averageRating = restaurants.length ? restaurants.reduce((total, item) => total + item.rating, 0) / restaurants.length : 0;
+
+  if (!checked) return null;
+  if (!allowed) {
+    return (
+      <main className="mx-auto grid min-h-screen max-w-md place-items-center px-4 py-8">
+        <section className="space-y-4 rounded-[2rem] border border-[var(--border)] bg-[var(--surface-raised)] p-6 text-center shadow-[var(--app-shadow)]">
+          <div className="mx-auto grid size-14 place-items-center rounded-2xl bg-[var(--surface-muted)] text-[var(--muted)]">
+            <Lock size={24} />
+          </div>
+          <div>
+            <h1 className="text-2xl font-black">Solo admin</h1>
+            <p className="mt-2 text-sm font-semibold leading-6 text-[var(--muted)]">Inicia sesion con un correo autorizado para ver estas opciones.</p>
+          </div>
+          <Link className="grid min-h-12 place-items-center rounded-2xl bg-[var(--foreground)] px-4 text-sm font-black text-[var(--background)]" href="/profile">
+            Volver al perfil
+          </Link>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-5 px-4 py-5 sm:px-6 lg:py-8">

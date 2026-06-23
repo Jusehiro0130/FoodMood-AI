@@ -39,4 +39,8 @@ Copy `.env.example` to `.env.local` when you want integrations. Supabase and Ope
 
 When `SUPABASE_URL` and `SUPABASE_ANON_KEY` are configured, `/api/restaurants` reads from the Supabase Postgres view `foodmood_restaurants_app`. Without them, the app falls back to `lib/data/restaurants.ts`.
 
+Google login uses Supabase Auth. Configure `NEXT_PUBLIC_SUPABASE_URL` for the browser redirect and keep `SUPABASE_ANON_KEY` available server-side so `/api/auth/session` can validate the token. Add admin emails in `FOODMOOD_ADMIN_EMAILS`, separated by commas.
+
+The 2 km, 5 km, and 10 km filters use the browser Geolocation API when the user taps "Usar mi ubicacion". Restaurants without valid latitude/longitude keep their database fallback distance.
+
 Database setup notes live in `database/README.md`.

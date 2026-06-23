@@ -7,6 +7,7 @@ const keys = {
   history: "foodmood.searchHistory",
   onboarding: "foodmood.onboardingCompleted",
   range: "foodmood.selectedRange",
+  supabaseAuth: "foodmood.supabaseAuth",
 } as const;
 
 function canUseStorage() { return typeof window !== "undefined" && typeof window.localStorage !== "undefined"; }
@@ -27,7 +28,8 @@ export const defaultProfile: UserProfile = {
 };
 
 export const storage = {
-  createDemoSession() { const session: DemoSession = { userId: "demo-user", name: "Juan", createdAt: new Date().toISOString() }; writeJson(keys.session, session); return session; },
+  createDemoSession() { const session: DemoSession = { userId: "demo-user", name: "Juan", createdAt: new Date().toISOString(), provider: "demo", role: "user" }; writeJson(keys.session, session); return session; },
+  saveSession(session: DemoSession) { writeJson(keys.session, session); return session; },
   getSession() { return readJson<DemoSession | null>(keys.session, null); },
   clearSession() { if (canUseStorage()) window.localStorage.removeItem(keys.session); },
   getProfile() { return readJson<UserProfile | null>(keys.profile, null); },
@@ -41,5 +43,5 @@ export const storage = {
   addSearchHistory(item: SearchHistoryItem) { const next = [item, ...this.getSearchHistory()].slice(0, 20); writeJson(keys.history, next); return next; },
   getRange() { return readJson<SearchRange>(keys.range, "5km"); },
   saveRange(range: SearchRange) { writeJson(keys.range, range); },
-  logout() { if (canUseStorage()) window.localStorage.removeItem(keys.session); },
+  logout() { if (canUseStorage()) { window.localStorage.removeItem(keys.session); window.localStorage.removeItem(keys.supabaseAuth); } },
 };

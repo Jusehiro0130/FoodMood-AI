@@ -48,7 +48,7 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 
 ### Current status
 
-- Active branch: `feature/data-foundation`.
+- Active branch: `feature/auth-location-admin`.
 - Preview comparison branch: `preview/supabase-data-demo`.
 - Latest Supabase data preview URL: `https://food-mood-ibjz1z1k9-jusehiro0130-7374s-projects.vercel.app`.
 - Latest data foundation commit before this memory update: `1259d80 Update memory for data foundation preview`.
@@ -83,6 +83,11 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - Supabase security advisors currently return no lints after the database setup.
 - Created `preview/supabase-data-demo` from the data foundation branch so Vercel can build a separate preview focused on the move from dummy/local restaurant data to Supabase-backed restaurant data.
 - Redeployed `preview/supabase-data-demo` after Vercel env vars were configured; `/api/restaurants` now returns `source: "supabase"` on the preview deployment.
+- Started auth/location/admin phase on `feature/auth-location-admin`.
+- Added live browser geolocation so 2 km, 5 km, and 10 km restaurant filters can use real user distance when permission is granted.
+- Added Supabase Google Auth redirect flow without new dependencies because `corepack pnpm add @supabase/supabase-js` repeatedly timed out locally.
+- Added `/api/auth/session` to validate Supabase access tokens server-side and assign `admin` from private comma-separated `FOODMOOD_ADMIN_EMAILS`.
+- Added admin visibility in profile and a client-side admin gate for `/admin/restaurants`.
 
 ### Current data model
 
@@ -92,6 +97,7 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - SerpApi source CSV files are tracked at the repo root; the safer deduplicated review file is `database/restaurants_serpapi_merged.csv`.
 - The selected MVP restaurant import contains 156 restaurants in `database/restaurants_selected_for_mvp.csv`.
 - User/session/preference/favorites/history data is stored in browser `localStorage` through `lib/storage.ts`.
+- Google-authenticated app sessions are also stored in `localStorage`; admin role is assigned by `/api/auth/session`, not by editable user metadata.
 - Shared data types live in `lib/types.ts`.
 
 ### Local environment notes
