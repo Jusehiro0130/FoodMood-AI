@@ -61,6 +61,7 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - Latest main merge commit before this memory update: `b2d710c Merge auth location admin into main`.
 - Latest Vercel production deploy status: `READY` for commit `b2d710c4912857f360d75a1f2f0f8f9eeaaf584c`.
 - Latest production deployment URL: `https://food-mood-6h34ztsem-jusehiro0130-7374s-projects.vercel.app`.
+- Latest production deploy status: `READY` for commit `6593987 Replace Google auth with email signup`.
 
 ### Recent work
 
@@ -96,6 +97,7 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - Added Supabase table `foodmood_users` through migration `create_foodmood_users_auth`; authenticated users are remembered there after login.
 - `foodmood_users` has RLS enabled and protects `role` from user self-escalation; admin can be assigned by SQL role update or by `FOODMOOD_ADMIN_EMAILS`.
 - Added `/register`, `/api/auth/signup`, and `/api/auth/password` for first name, last name, username, email, password signup and email activation.
+- Applied Supabase migration `foodmood_users_email_auth_update` to add first name, last name, username, and email provider defaults to `foodmood_users`.
 
 ### Current data model
 
