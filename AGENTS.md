@@ -48,10 +48,15 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 
 ### Current status
 
-- Active branch: `main`.
+- Active branch: `feature/data-foundation`.
+- Preview comparison branch: `preview/supabase-data-demo`.
+- Latest Supabase data preview URL: `https://food-mood-ibjz1z1k9-jusehiro0130-7374s-projects.vercel.app`.
+- Latest data foundation commit before this memory update: `1259d80 Update memory for data foundation preview`.
+- Latest Vercel preview status for `feature/data-foundation`: `READY`.
+- Latest Vercel preview URL: `https://food-mood-ow6hanoin-jusehiro0130-7374s-projects.vercel.app`.
 - Feature branch `feature/ui-polish` was merged into `main`.
 - Latest main merge commit before this memory update: `a100c1c Merge feature/ui-polish into main`.
-- Latest Vercel production deploy status at merge time: `QUEUED` for commit `a100c1c`.
+- Latest Vercel production deploy status: `READY` for commit `1cabccf Update memory after main merge`.
 - Production URL: `https://food-mood-ai.vercel.app`.
 
 ### Recent work
@@ -67,16 +72,30 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - Added `website` to the `Restaurant` type and normalized recommendation matching so accents in categories do not break search matches.
 - Created review CSV `database/restaurants_serpapi_merged.csv` from `restaurantes_serpapi.csv` and `restaurantes_serpapi_v2.csv`; it deduplicates 239 source rows into 175 restaurants and removes phone, image, and Google ID columns for safer review.
 - Tracked the raw SerpApi source CSV files in Git so the review dataset can be audited and regenerated later.
+- Started data foundation phase on `feature/data-foundation`.
+- Chose Supabase Postgres for the first real database path because it keeps data in portable Postgres, provides a SQL editor, and leaves room for auth/storage/admin workflows later.
+- Added selected MVP data files: `database/restaurants_selected_for_mvp.csv` and `database/restaurants_selected_seed.sql`.
+- Added `/api/restaurants`, which reads Supabase REST view `foodmood_restaurants_app` when `SUPABASE_URL` and `SUPABASE_ANON_KEY` exist, otherwise returns local mock restaurants.
+- Added `/admin/restaurants` as a read-only internal review screen for restaurant data.
+- Connected Supabase project `foodai` (`wszrwmhjfllsazxmfjpl`) and created the FoodMood restaurant schema there.
+- Loaded Supabase with 10 categories, 156 restaurants, and 156 restaurant-category relations.
+- Hardened Supabase read access: RLS is enabled, read-only policies exist for `anon`/`authenticated`, and `foodmood_restaurants_app` uses `security_invoker = true`.
+- Supabase security advisors currently return no lints after the database setup.
+- Created `preview/supabase-data-demo` from the data foundation branch so Vercel can build a separate preview focused on the move from dummy/local restaurant data to Supabase-backed restaurant data.
+- Redeployed `preview/supabase-data-demo` after Vercel env vars were configured; `/api/restaurants` now returns `source: "supabase"` on the preview deployment.
 
 ### Current data model
 
-- There is no real SQL database connected yet.
-- Restaurant data is mock/local in `lib/data/restaurants.ts`, backed by the canonical future SQL seed in `database/restaurants_seed.sql`.
+- Supabase project `foodai` is provisioned and loaded. API URL: `https://wszrwmhjfllsazxmfjpl.supabase.co`.
+- Restaurant data falls back to mock/local in `lib/data/restaurants.ts`; when Supabase env vars exist in Vercel/local, `/api/restaurants` reads `foodmood_restaurants_app`.
+- Vercel still needs Supabase environment variables configured for deployed builds: `SUPABASE_URL` and `SUPABASE_ANON_KEY` (or the `NEXT_PUBLIC_` aliases already supported by the app).
 - SerpApi source CSV files are tracked at the repo root; the safer deduplicated review file is `database/restaurants_serpapi_merged.csv`.
+- The selected MVP restaurant import contains 156 restaurants in `database/restaurants_selected_for_mvp.csv`.
 - User/session/preference/favorites/history data is stored in browser `localStorage` through `lib/storage.ts`.
 - Shared data types live in `lib/types.ts`.
 
 ### Local environment notes
 
-- Local `pnpm` is still not available in the current Windows terminal, so local `pnpm build` could not be run.
+- Local `pnpm` is not on PATH, but `corepack pnpm` is available.
+- `corepack pnpm typecheck` and dependency installs can hang in this Windows environment; `npx` is blocked by PowerShell policy or network failures.
 - Vercel remote builds are being used as the current validation path.

@@ -10,9 +10,9 @@ import { RangeSelector } from "@/components/range-selector";
 import { RestaurantCard } from "@/components/restaurant-card";
 import { SearchBox } from "@/components/search-box";
 import { parseFoodIntent } from "@/lib/ai/parse-food-intent";
-import { restaurants } from "@/lib/data/restaurants";
 import { rankRestaurants } from "@/lib/ranking";
 import { defaultProfile, storage } from "@/lib/storage";
+import { useRestaurants } from "@/lib/use-restaurants";
 import type { FoodIntent, SearchHistoryItem, SearchRange, UserProfile } from "@/lib/types";
 
 const examples = ["quiero comida italiana para una cita", "salchipapa barata cerca", "algo rapido y economico", "quiero sushi con amigos", "no se que comer"];
@@ -27,6 +27,7 @@ export function SearchClient() {
   const [history, setHistory] = useState<SearchHistoryItem[]>([]);
   const [intent, setIntent] = useState<FoodIntent | null>(null);
   const [ready, setReady] = useState(false);
+  const { restaurants } = useRestaurants();
   useEffect(() => { if (!storage.getSession()) { router.replace("/login"); return; } setProfile(storage.getProfile() ?? defaultProfile); setRange(storage.getRange()); const nextHistory = storage.getSearchHistory(); setHistory(nextHistory); setIntent(null); if (query) { const parsedIntent = parseFoodIntent(query); const historyItem: SearchHistoryItem = { id: `${Date.now()}`, query, parsedIntent, createdAt: new Date().toISOString() }; setIntent(parsedIntent); setHistory(storage.addSearchHistory(historyItem)); } setReady(true); }, [query, router]);
   const ranked = useMemo(() => rankRestaurants(restaurants, profile, intent, range, history), [profile, intent, range, history]);
   function handleRangeChange(nextRange: SearchRange) { setRange(nextRange); storage.saveRange(nextRange); }

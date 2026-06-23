@@ -7,9 +7,9 @@ import { AppShell } from "@/components/app-shell";
 import { BottomNav } from "@/components/bottom-nav";
 import { EmptyState } from "@/components/empty-state";
 import { RestaurantCard } from "@/components/restaurant-card";
-import { restaurants } from "@/lib/data/restaurants";
 import { rankRestaurants } from "@/lib/ranking";
 import { defaultProfile, storage } from "@/lib/storage";
+import { useRestaurants } from "@/lib/use-restaurants";
 import type { UserProfile } from "@/lib/types";
 
 export default function FavoritesPage() {
@@ -17,6 +17,7 @@ export default function FavoritesPage() {
   const [profile, setProfile] = useState<UserProfile>(defaultProfile);
   const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
   const [ready, setReady] = useState(false);
+  const { restaurants } = useRestaurants();
   useEffect(() => { if (!storage.getSession()) { router.replace("/login"); return; } setProfile(storage.getProfile() ?? defaultProfile); setFavoriteIds(storage.getFavorites()); setReady(true); }, [router]);
   const favorites = useMemo(() => rankRestaurants(restaurants.filter((restaurant) => favoriteIds.includes(restaurant.id)), profile, null, "city", storage.getSearchHistory()), [favoriteIds, profile]);
   if (!ready) return <AppShell />;
