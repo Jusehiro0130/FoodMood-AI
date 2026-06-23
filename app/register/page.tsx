@@ -9,6 +9,7 @@ import { AppShell } from "@/components/app-shell";
 export default function RegisterPage() {
   const [form, setForm] = useState({ firstName: "", lastName: "", username: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
 
@@ -37,6 +38,28 @@ export default function RegisterPage() {
 
     setSuccess(true);
     setMessage(data.message ?? "Revisa tu correo para activar la cuenta.");
+  }
+
+  async function resendConfirmation() {
+    setResending(true);
+    setMessage("");
+
+    const response = await fetch("/api/auth/resend-confirmation", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email: form.email }),
+    });
+    const data = await response.json();
+    setResending(false);
+
+    if (!response.ok) {
+      setSuccess(false);
+      setMessage(data.error ?? "No se pudo reenviar el correo.");
+      return;
+    }
+
+    setSuccess(true);
+    setMessage(data.message ?? "Correo de verificacion reenviado.");
   }
 
   return (
@@ -68,6 +91,9 @@ export default function RegisterPage() {
           </form>
 
           {message ? <p className={`text-center text-xs font-black leading-5 ${success ? "text-[var(--accent)]" : "text-[var(--brand)]"}`}>{message}</p> : null}
+          <button className="min-h-12 w-full rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] px-4 text-sm font-black text-[var(--foreground)] disabled:opacity-50" disabled={resending || !form.email} onClick={resendConfirmation} type="button">
+            {resending ? "Reenviando..." : "Reenviar correo de verificacion"}
+          </button>
           <p className="text-center text-xs font-semibold leading-5 text-[var(--muted)]">
             Ya tienes cuenta? <Link className="font-black text-[var(--brand)]" href="/login">Inicia sesion</Link>.
           </p>

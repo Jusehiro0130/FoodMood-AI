@@ -100,6 +100,7 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - Applied Supabase migration `foodmood_users_email_auth_update` to add first name, last name, username, and email provider defaults to `foodmood_users`.
 - Email activation links must use production URL settings in Supabase: Site URL `https://food-mood-ai.vercel.app` and redirect `https://food-mood-ai.vercel.app/auth/callback`. Added `APP_URL` support in signup to avoid localhost links in production.
 - Added guest access from `/login`. Guest sessions use `provider: "guest"`, can browse recommendations without email activation, and must not persist preferences, onboarding, search history, favorites, range, or Supabase user records.
+- Added `/api/auth/resend-confirmation` and a resend button on `/register` so users can request a new Supabase signup confirmation email when the original email is missing or expired.
 
 ### Current data model
 
