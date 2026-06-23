@@ -2,7 +2,7 @@
 
 FoodMood AI is a mobile-first restaurant recommendation MVP built with Next.js App Router, TypeScript, Tailwind CSS, and PNPM.
 
-This first phase only includes the project setup and a minimal initial screen. Authentication, onboarding, restaurant data, natural-language search, favorites, and profile flows will be added in separate feature branches.
+The MVP includes demo login, onboarding, natural-language search, recommendations, favorites, profile, local fallback data, and a database-ready restaurant layer.
 
 ## Requirements
 
@@ -35,4 +35,8 @@ pnpm build
 
 ## Environment Variables
 
-Copy `.env.example` to `.env.local` when a future phase needs integrations. Supabase and OpenAI keys are not required for this setup phase.
+Copy `.env.example` to `.env.local` when you want integrations. Supabase and OpenAI keys are not required for the MVP to run.
+
+When `SUPABASE_URL` and `SUPABASE_ANON_KEY` are configured, `/api/restaurants` reads from the Supabase Postgres view `foodmood_restaurants_app`. Without them, the app falls back to `lib/data/restaurants.ts`.
+
+Database setup notes live in `database/README.md`.

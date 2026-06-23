@@ -10,10 +10,10 @@ import { RangeSelector } from "@/components/range-selector";
 import { RestaurantCard } from "@/components/restaurant-card";
 import { SearchBox } from "@/components/search-box";
 import { parseFoodIntent } from "@/lib/ai/parse-food-intent";
-import { restaurants } from "@/lib/data/restaurants";
 import { rankRestaurants } from "@/lib/ranking";
 import { defaultProfile, storage } from "@/lib/storage";
 import { getRecurringUserPreferences } from "@/lib/user-preferences";
+import { useRestaurants } from "@/lib/use-restaurants";
 import type { SearchHistoryItem, SearchRange, UserProfile } from "@/lib/types";
 
 const quickChips = ["No se que comer", "Salchipapa barata cerca", "Italiana para una cita", "Algo rapido y economico", "Hamburguesa grande cerca"];
@@ -24,6 +24,7 @@ export default function Home() {
   const [range, setRange] = useState<SearchRange>("5km");
   const [history, setHistory] = useState<SearchHistoryItem[]>([]);
   const [ready, setReady] = useState(false);
+  const { restaurants } = useRestaurants();
 
   useEffect(() => {
     if (!storage.getSession()) { router.replace("/login"); return; }

@@ -7,9 +7,9 @@ import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { MatchBadge } from "@/components/match-badge";
-import { restaurants } from "@/lib/data/restaurants";
 import { calculateRestaurantMatch } from "@/lib/ranking";
 import { defaultProfile, storage } from "@/lib/storage";
+import { useRestaurants } from "@/lib/use-restaurants";
 import type { UserProfile } from "@/lib/types";
 
 export default function RestaurantDetailPage() {
@@ -18,6 +18,7 @@ export default function RestaurantDetailPage() {
   const [profile, setProfile] = useState<UserProfile>(defaultProfile);
   const [saved, setSaved] = useState(false);
   const [ready, setReady] = useState(false);
+  const { restaurants, loading } = useRestaurants();
   const restaurant = restaurants.find((item) => item.id === params.id);
   useEffect(() => {
     if (!storage.getSession()) {
@@ -36,7 +37,7 @@ export default function RestaurantDetailPage() {
     setSaved(next.includes(params.id));
   }
 
-  if (!ready) return <AppShell />;
+  if (!ready || (!restaurant && loading)) return <AppShell />;
   if (!restaurant) {
     return (
       <AppShell>

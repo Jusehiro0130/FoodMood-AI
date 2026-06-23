@@ -1,4 +1,4 @@
-export type BudgetLevel = "$" | "$$" | "$$$";
+export type BudgetLevel = "$" | "$$" | "$$$" | "$$$$";
 export type SearchRange = "2km" | "5km" | "10km" | "city";
 
 export type DemoSession = { userId: string; name: string; createdAt: string };
@@ -47,3 +47,4 @@ export type SearchHistoryItem = { id: string; query: string; parsedIntent: FoodI
 export type MatchResult = { score: number; reasons: string[] };
 export type RankedRestaurant = Restaurant & { match: MatchResult };
 export type RecurringPreferences = { categories: string[]; ambience: string[]; budget?: BudgetLevel };
+export type RestaurantDataSource = "local" | "supabase";
