@@ -49,6 +49,9 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 ### Current status
 
 - Active branch: `feature/data-foundation`.
+- Latest data foundation commit before this memory update: `036b2d1 Add database-backed restaurant foundation`.
+- Latest Vercel preview status for `feature/data-foundation`: `READY`.
+- Latest Vercel preview URL: `https://food-mood-ow6hanoin-jusehiro0130-7374s-projects.vercel.app`.
 - Feature branch `feature/ui-polish` was merged into `main`.
 - Latest main merge commit before this memory update: `a100c1c Merge feature/ui-polish into main`.
 - Latest Vercel production deploy status: `READY` for commit `1cabccf Update memory after main merge`.
