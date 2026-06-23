@@ -33,6 +33,17 @@ SUPABASE_ANON_KEY=
 
 After those env vars exist, `/api/restaurants` reads from `foodmood_restaurants_app`. Without them, it returns local mock restaurants.
 
+## Current Supabase Project
+
+- Project name: `foodai`
+- Project ref: `wszrwmhjfllsazxmfjpl`
+- API URL: `https://wszrwmhjfllsazxmfjpl.supabase.co`
+- Loaded data: 10 categories, 156 restaurants, 156 restaurant-category relations.
+- App view: `foodmood_restaurants_app`, configured with `security_invoker = true`.
+- Security: RLS is enabled on public tables with read-only policies for `anon` and `authenticated`.
+
+Use the publishable key from Supabase dashboard as `SUPABASE_ANON_KEY` or `NEXT_PUBLIC_SUPABASE_ANON_KEY`. Do not commit it to Git.
+
 ## Useful Queries
 
 ```sql

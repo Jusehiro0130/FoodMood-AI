@@ -351,7 +351,8 @@ JOIN restaurantes r ON r.slug = p.restaurante_slug
 JOIN categorias c ON c.slug = p.categoria_slug
 ON CONFLICT DO NOTHING;
 
-CREATE OR REPLACE VIEW foodmood_restaurants_app AS
+CREATE OR REPLACE VIEW foodmood_restaurants_app
+WITH (security_invoker = true) AS
 SELECT
   r.slug AS id,
   r.nombre AS name,
@@ -375,3 +376,32 @@ LEFT JOIN restaurante_categorias rc ON rc.restaurante_id = r.id
 LEFT JOIN categorias c ON c.id = rc.categoria_id
 WHERE r.activo = TRUE
 GROUP BY r.id;
+
+ALTER TABLE categorias ENABLE ROW LEVEL SECURITY;
+ALTER TABLE restaurantes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE restaurante_categorias ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public read categories" ON categorias;
+DROP POLICY IF EXISTS "Public read active restaurants" ON restaurantes;
+DROP POLICY IF EXISTS "Public read restaurant categories" ON restaurante_categorias;
+
+CREATE POLICY "Public read categories"
+  ON categorias
+  FOR SELECT
+  TO anon, authenticated
+  USING (true);
+
+CREATE POLICY "Public read active restaurants"
+  ON restaurantes
+  FOR SELECT
+  TO anon, authenticated
+  USING (activo = TRUE);
+
+CREATE POLICY "Public read restaurant categories"
+  ON restaurante_categorias
+  FOR SELECT
+  TO anon, authenticated
+  USING (true);
+
+GRANT USAGE ON SCHEMA public TO anon, authenticated;
+GRANT SELECT ON categorias, restaurantes, restaurante_categorias, foodmood_restaurants_app TO anon, authenticated;

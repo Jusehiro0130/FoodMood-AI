@@ -49,7 +49,7 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 ### Current status
 
 - Active branch: `feature/data-foundation`.
-- Latest data foundation commit before this memory update: `036b2d1 Add database-backed restaurant foundation`.
+- Latest data foundation commit before this memory update: `1259d80 Update memory for data foundation preview`.
 - Latest Vercel preview status for `feature/data-foundation`: `READY`.
 - Latest Vercel preview URL: `https://food-mood-ow6hanoin-jusehiro0130-7374s-projects.vercel.app`.
 - Feature branch `feature/ui-polish` was merged into `main`.
@@ -75,11 +75,16 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - Added selected MVP data files: `database/restaurants_selected_for_mvp.csv` and `database/restaurants_selected_seed.sql`.
 - Added `/api/restaurants`, which reads Supabase REST view `foodmood_restaurants_app` when `SUPABASE_URL` and `SUPABASE_ANON_KEY` exist, otherwise returns local mock restaurants.
 - Added `/admin/restaurants` as a read-only internal review screen for restaurant data.
+- Connected Supabase project `foodai` (`wszrwmhjfllsazxmfjpl`) and created the FoodMood restaurant schema there.
+- Loaded Supabase with 10 categories, 156 restaurants, and 156 restaurant-category relations.
+- Hardened Supabase read access: RLS is enabled, read-only policies exist for `anon`/`authenticated`, and `foodmood_restaurants_app` uses `security_invoker = true`.
+- Supabase security advisors currently return no lints after the database setup.
 
 ### Current data model
 
-- There is no provisioned production database connected yet, but the app now supports Supabase Postgres through REST env vars.
-- Restaurant data falls back to mock/local in `lib/data/restaurants.ts`; when Supabase env vars exist, `/api/restaurants` reads `foodmood_restaurants_app`.
+- Supabase project `foodai` is provisioned and loaded. API URL: `https://wszrwmhjfllsazxmfjpl.supabase.co`.
+- Restaurant data falls back to mock/local in `lib/data/restaurants.ts`; when Supabase env vars exist in Vercel/local, `/api/restaurants` reads `foodmood_restaurants_app`.
+- Vercel still needs Supabase environment variables configured for deployed builds: `SUPABASE_URL` and `SUPABASE_ANON_KEY` (or the `NEXT_PUBLIC_` aliases already supported by the app).
 - SerpApi source CSV files are tracked at the repo root; the safer deduplicated review file is `database/restaurants_serpapi_merged.csv`.
 - The selected MVP restaurant import contains 156 restaurants in `database/restaurants_selected_for_mvp.csv`.
 - User/session/preference/favorites/history data is stored in browser `localStorage` through `lib/storage.ts`.
