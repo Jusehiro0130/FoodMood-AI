@@ -99,6 +99,7 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - Added `/register`, `/api/auth/signup`, and `/api/auth/password` for first name, last name, username, email, password signup and email activation.
 - Applied Supabase migration `foodmood_users_email_auth_update` to add first name, last name, username, and email provider defaults to `foodmood_users`.
 - Email activation links must use production URL settings in Supabase: Site URL `https://food-mood-ai.vercel.app` and redirect `https://food-mood-ai.vercel.app/auth/callback`. Added `APP_URL` support in signup to avoid localhost links in production.
+- Added guest access from `/login`. Guest sessions use `provider: "guest"`, can browse recommendations without email activation, and must not persist preferences, onboarding, search history, favorites, range, or Supabase user records.
 
 ### Current data model
 
@@ -109,6 +110,7 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - The selected MVP restaurant import contains 156 restaurants in `database/restaurants_selected_for_mvp.csv`.
 - User/session/preference/favorites/history data is stored in browser `localStorage` through `lib/storage.ts`.
 - Email-authenticated app sessions are also stored in `localStorage`; admin role is assigned by `/api/auth/session`, not by editable user metadata.
+- Guest sessions are local-only and intentionally non-persistent for user preferences/history/favorites; they are not written to Supabase.
 - Persistent user records live in Supabase `public.foodmood_users` with columns for email, name, first name, last name, username, avatar, provider, role, and last login.
 - Shared data types live in `lib/types.ts`.
 

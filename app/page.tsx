@@ -31,7 +31,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!storage.getSession()) { router.replace("/login"); return; }
-    if (!storage.isOnboardingCompleted()) { router.replace("/onboarding"); return; }
+    if (!storage.isGuestSession() && !storage.isOnboardingCompleted()) { router.replace("/onboarding"); return; }
     setProfile(storage.getProfile() ?? defaultProfile);
     setRange(storage.getRange());
     setHistory(storage.getSearchHistory());

@@ -1,6 +1,6 @@
 "use client";
 
-import { LogIn, Utensils } from "lucide-react";
+import { LogIn, UserRound, Utensils } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
@@ -54,6 +54,11 @@ export default function LoginPage() {
     router.replace(storage.isOnboardingCompleted() ? "/" : "/onboarding");
   }
 
+  function enterAsGuest() {
+    storage.saveGuestSession();
+    router.replace("/");
+  }
+
   return (
     <AppShell>
       <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-5 py-8">
@@ -84,6 +89,16 @@ export default function LoginPage() {
           </form>
 
           {message ? <p className="text-center text-xs font-black leading-5 text-[var(--brand)]">{message}</p> : null}
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-1 bg-[var(--border)]" />
+            <span className="text-xs font-black uppercase tracking-[0.14em] text-[var(--muted)]">o</span>
+            <div className="h-px flex-1 bg-[var(--border)]" />
+          </div>
+          <button className="flex min-h-13 w-full items-center justify-center gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] px-5 text-sm font-black text-[var(--foreground)]" onClick={enterAsGuest} type="button">
+            <UserRound size={18} />
+            Entrar como invitado
+          </button>
+          <p className="text-center text-xs font-semibold leading-5 text-[var(--muted)]">Como invitado puedes explorar sin guardar preferencias, historial ni favoritos.</p>
           <p className="text-center text-xs font-semibold leading-5 text-[var(--muted)]">
             No tienes cuenta? <Link className="font-black text-[var(--brand)]" href="/register">Crea una aqui</Link>.
           </p>

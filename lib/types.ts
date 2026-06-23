@@ -6,7 +6,7 @@ export type DemoSession = {
   userId: string;
   name: string;
   createdAt: string;
-  provider?: "email";
+  provider?: "email" | "guest";
   email?: string;
   avatarUrl?: string;
   accessToken?: string;
