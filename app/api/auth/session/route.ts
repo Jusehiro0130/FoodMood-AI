@@ -6,6 +6,9 @@ type FoodMoodSessionUser = {
   id: string;
   email: string;
   name: string;
+  firstName?: string;
+  lastName?: string;
+  username?: string;
   avatarUrl?: string;
   role: FoodMoodRole;
 };
@@ -57,9 +60,12 @@ async function rememberFoodMoodUser(input: {
       id: input.user.id,
       email: input.user.email,
       name: input.user.name,
+      first_name: input.user.firstName,
+      last_name: input.user.lastName,
+      username: input.user.username,
       avatar_url: input.user.avatarUrl,
       role: input.user.role,
-      provider: "google",
+      provider: "email",
       last_login_at: new Date().toISOString(),
     }),
     cache: "no-store",
@@ -95,7 +101,7 @@ export async function GET(request: Request) {
   const user = await response.json() as {
     id: string;
     email?: string;
-    user_metadata?: { full_name?: string; name?: string; avatar_url?: string };
+    user_metadata?: { full_name?: string; name?: string; first_name?: string; last_name?: string; username?: string; avatar_url?: string };
   };
   const email = user.email?.toLowerCase() ?? "";
   const storedRole = await getStoredFoodMoodRole({ supabaseUrl, anonKey, userToken: token, userId: user.id });
@@ -104,6 +110,9 @@ export async function GET(request: Request) {
     id: user.id,
     email,
     name: user.user_metadata?.full_name ?? user.user_metadata?.name ?? email.split("@")[0] ?? "Usuario",
+    firstName: user.user_metadata?.first_name,
+    lastName: user.user_metadata?.last_name,
+    username: user.user_metadata?.username,
     avatarUrl: user.user_metadata?.avatar_url,
     role,
   };

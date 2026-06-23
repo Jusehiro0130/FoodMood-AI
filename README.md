@@ -2,7 +2,7 @@
 
 FoodMood AI is a mobile-first restaurant recommendation MVP built with Next.js App Router, TypeScript, Tailwind CSS, and PNPM.
 
-The MVP includes demo login, onboarding, natural-language search, recommendations, favorites, profile, local fallback data, and a database-ready restaurant layer.
+The MVP includes email registration/login, onboarding, natural-language search, recommendations, favorites, profile, local fallback data, and a database-ready restaurant layer.
 
 ## Requirements
 
@@ -39,7 +39,9 @@ Copy `.env.example` to `.env.local` when you want integrations. Supabase and Ope
 
 When `SUPABASE_URL` and `SUPABASE_ANON_KEY` are configured, `/api/restaurants` reads from the Supabase Postgres view `foodmood_restaurants_app`. Without them, the app falls back to `lib/data/restaurants.ts`.
 
-Google login uses Supabase Auth. Configure `SUPABASE_URL` server-side for the login redirect and keep `SUPABASE_ANON_KEY` available server-side so `/api/auth/session` can validate the token. `NEXT_PUBLIC_SUPABASE_URL` is optional because `/api/auth/config` exposes only the safe public Supabase URL to the login screen. Users are remembered in the Supabase table `foodmood_users` after login.
+Email/password login uses Supabase Auth. Configure `SUPABASE_URL` and `SUPABASE_ANON_KEY` server-side so `/api/auth/signup`, `/api/auth/password`, and `/api/auth/session` can create accounts, validate tokens, and remember users in `foodmood_users`.
+
+Supabase email confirmation should be enabled for account activation. The app signup form collects first name, last name, username, email, and password, then tells the user to activate the account from their email before logging in.
 
 Admin users can be created in either of two ways:
 

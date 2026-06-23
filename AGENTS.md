@@ -88,14 +88,14 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - Redeployed `preview/supabase-data-demo` after Vercel env vars were configured; `/api/restaurants` now returns `source: "supabase"` on the preview deployment.
 - Started auth/location/admin phase on `feature/auth-location-admin`.
 - Added live browser geolocation so 2 km, 5 km, and 10 km restaurant filters can use real user distance when permission is granted.
-- Added Supabase Google Auth redirect flow without new dependencies because `corepack pnpm add @supabase/supabase-js` repeatedly timed out locally.
+- Replaced Google Auth plan with Supabase email/password auth because Google Cloud OAuth credentials were not available.
 - Added `/api/auth/session` to validate Supabase access tokens server-side and assign `admin` from private comma-separated `FOODMOOD_ADMIN_EMAILS`.
 - Added admin visibility in profile and a client-side admin gate for `/admin/restaurants`.
 - Restyled restaurant cards to the compact dark "Concepto B - etiqueta colgante" pattern requested by the user: orange circular food icon, lowercase restaurant title, match percentage, and compact distance/price/rating row.
-- Removed the demo login button so Google Auth is the primary entry path.
-- Added Supabase table `foodmood_users` through migration `create_foodmood_users_auth`; authenticated users are remembered there after Google login.
+- Removed the demo login button so email/password auth is the primary entry path.
+- Added Supabase table `foodmood_users` through migration `create_foodmood_users_auth`; authenticated users are remembered there after login.
 - `foodmood_users` has RLS enabled and protects `role` from user self-escalation; admin can be assigned by SQL role update or by `FOODMOOD_ADMIN_EMAILS`.
-- Added `/api/auth/config` so login can use server-side `SUPABASE_URL`; `NEXT_PUBLIC_SUPABASE_URL` is no longer required just to enable the Google button.
+- Added `/register`, `/api/auth/signup`, and `/api/auth/password` for first name, last name, username, email, password signup and email activation.
 
 ### Current data model
 
@@ -105,8 +105,8 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - SerpApi source CSV files are tracked at the repo root; the safer deduplicated review file is `database/restaurants_serpapi_merged.csv`.
 - The selected MVP restaurant import contains 156 restaurants in `database/restaurants_selected_for_mvp.csv`.
 - User/session/preference/favorites/history data is stored in browser `localStorage` through `lib/storage.ts`.
-- Google-authenticated app sessions are also stored in `localStorage`; admin role is assigned by `/api/auth/session`, not by editable user metadata.
-- Persistent user records live in Supabase `public.foodmood_users` with columns for email, name, avatar, provider, role, and last login.
+- Email-authenticated app sessions are also stored in `localStorage`; admin role is assigned by `/api/auth/session`, not by editable user metadata.
+- Persistent user records live in Supabase `public.foodmood_users` with columns for email, name, first name, last name, username, avatar, provider, role, and last login.
 - Shared data types live in `lib/types.ts`.
 
 ### Local environment notes

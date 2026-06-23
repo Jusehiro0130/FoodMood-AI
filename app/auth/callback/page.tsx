@@ -9,7 +9,7 @@ import { defaultProfile, storage } from "@/lib/storage";
 
 export default function AuthCallbackPage() {
   const router = useRouter();
-  const [message, setMessage] = useState("Validando sesion con Google...");
+  const [message, setMessage] = useState("Validando activacion de cuenta...");
 
   useEffect(() => {
     async function finishLogin() {
@@ -39,7 +39,7 @@ export default function AuthCallbackPage() {
         avatarUrl: data.user.avatarUrl,
         accessToken: tokens.accessToken,
         createdAt: new Date().toISOString(),
-        provider: "google",
+        provider: "email",
         role: data.user.role,
       });
       if (!storage.getProfile()) {

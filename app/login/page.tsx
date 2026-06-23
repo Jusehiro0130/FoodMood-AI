@@ -1,26 +1,57 @@
 "use client";
 
-import { User, Utensils } from "lucide-react";
+import { LogIn, Utensils } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import type { FormEvent } from "react";
 import { useState } from "react";
 import { AppShell } from "@/components/app-shell";
-import { getGoogleLoginUrl } from "@/lib/auth/supabase-auth";
+import { saveAuthTokens } from "@/lib/auth/supabase-auth";
+import { defaultProfile, storage } from "@/lib/storage";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
-  async function enterWithGoogle() {
+  async function login(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     setLoading(true);
-    setError("");
-    const response = await fetch("/api/auth/config", { cache: "no-store" });
+    setMessage("");
+
+    const response = await fetch("/api/auth/password", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await response.json();
+    setLoading(false);
+
     if (!response.ok) {
-      setLoading(false);
-      setError("Falta configurar SUPABASE_URL en Vercel.");
+      setMessage(data.error ?? "No se pudo iniciar sesion.");
       return;
     }
-    const data = await response.json() as { supabaseUrl: string };
-    const loginUrl = getGoogleLoginUrl(window.location.origin, data.supabaseUrl);
-    if (loginUrl) window.location.href = loginUrl;
+
+    saveAuthTokens({
+      accessToken: data.accessToken,
+      refreshToken: data.refreshToken,
+      expiresAt: data.expiresIn ? Date.now() + data.expiresIn * 1000 : undefined,
+    });
+    storage.saveSession({
+      userId: data.user.id,
+      name: data.user.name,
+      email: data.user.email,
+      accessToken: data.accessToken,
+      createdAt: new Date().toISOString(),
+      provider: "email",
+      role: data.user.role,
+    });
+    if (!storage.getProfile()) {
+      storage.saveProfile({ ...defaultProfile, id: data.user.id, name: data.user.name });
+    }
+    router.replace(storage.isOnboardingCompleted() ? "/" : "/onboarding");
   }
 
   return (
@@ -33,26 +64,29 @@ export default function LoginPage() {
             </div>
             <div>
               <h1 className="text-4xl font-black text-[var(--foreground)]">FoodMood AI</h1>
-              <p className="mt-3 text-base font-semibold leading-7 text-[var(--muted)]">Decide rapido, guarda gustos y prueba recomendaciones locales.</p>
+              <p className="mt-3 text-base font-semibold leading-7 text-[var(--muted)]">Entra con tu correo para guardar gustos, historial y recomendaciones.</p>
             </div>
           </div>
 
-          <div className="space-y-3">
-            <button
-              className="flex min-h-14 w-full items-center justify-center gap-3 rounded-2xl bg-[var(--foreground)] px-5 text-base font-black text-[var(--background)] shadow-sm disabled:opacity-50"
-              disabled={loading}
-              onClick={enterWithGoogle}
-              type="button"
-            >
-              <User size={20} />
-              {loading ? "Conectando..." : "Continuar con Google"}
+          <form className="space-y-3" onSubmit={login}>
+            <label className="block">
+              <span className="mb-2 block text-xs font-black uppercase tracking-[0.14em] text-[var(--muted)]">Correo</span>
+              <input className="min-h-13 w-full rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] px-4 text-sm font-bold outline-none" onChange={(event) => setEmail(event.target.value)} required type="email" value={email} />
+            </label>
+            <label className="block">
+              <span className="mb-2 block text-xs font-black uppercase tracking-[0.14em] text-[var(--muted)]">Contrasena</span>
+              <input className="min-h-13 w-full rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] px-4 text-sm font-bold outline-none" minLength={8} onChange={(event) => setPassword(event.target.value)} required type="password" value={password} />
+            </label>
+            <button className="flex min-h-14 w-full items-center justify-center gap-3 rounded-2xl bg-[var(--foreground)] px-5 text-base font-black text-[var(--background)] shadow-sm disabled:opacity-50" disabled={loading} type="submit">
+              <LogIn size={20} />
+              {loading ? "Entrando..." : "Iniciar sesion"}
             </button>
-          </div>
+          </form>
 
+          {message ? <p className="text-center text-xs font-black leading-5 text-[var(--brand)]">{message}</p> : null}
           <p className="text-center text-xs font-semibold leading-5 text-[var(--muted)]">
-            Inicia sesion con Google para guardar tus gustos y tu historial en FoodMood.
+            No tienes cuenta? <Link className="font-black text-[var(--brand)]" href="/register">Crea una aqui</Link>.
           </p>
-          {error ? <p className="text-center text-xs font-black text-[var(--brand)]">{error}</p> : null}
         </section>
       </main>
     </AppShell>

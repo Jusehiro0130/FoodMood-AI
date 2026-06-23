@@ -31,7 +31,7 @@ export const storage = {
   saveSession(session: DemoSession) { writeJson(keys.session, session); return session; },
   getSession() {
     const session = readJson<DemoSession | null>(keys.session, null);
-    return session?.provider === "google" ? session : null;
+    return session?.provider === "email" ? session : null;
   },
   clearSession() { if (canUseStorage()) window.localStorage.removeItem(keys.session); },
   getProfile() { return readJson<UserProfile | null>(keys.profile, null); },

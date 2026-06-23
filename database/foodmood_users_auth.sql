@@ -2,15 +2,19 @@ create table if not exists public.foodmood_users (
   id uuid primary key references auth.users(id) on delete cascade,
   email text not null,
   name text not null default 'Usuario',
+  first_name text,
+  last_name text,
+  username text,
   avatar_url text,
   role text not null default 'user' check (role in ('user', 'admin')),
-  provider text not null default 'google',
+  provider text not null default 'email',
   last_login_at timestamptz not null default now(),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
 create unique index if not exists foodmood_users_email_key on public.foodmood_users (lower(email));
+create unique index if not exists foodmood_users_username_key on public.foodmood_users (lower(username)) where username is not null;
 
 alter table public.foodmood_users enable row level security;
 
