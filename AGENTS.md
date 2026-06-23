@@ -49,6 +49,7 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 ### Current status
 
 - Active branch: `feature/data-foundation`.
+- Preview comparison branch: `preview/supabase-data-demo`.
 - Latest data foundation commit before this memory update: `1259d80 Update memory for data foundation preview`.
 - Latest Vercel preview status for `feature/data-foundation`: `READY`.
 - Latest Vercel preview URL: `https://food-mood-ow6hanoin-jusehiro0130-7374s-projects.vercel.app`.
@@ -79,6 +80,7 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - Loaded Supabase with 10 categories, 156 restaurants, and 156 restaurant-category relations.
 - Hardened Supabase read access: RLS is enabled, read-only policies exist for `anon`/`authenticated`, and `foodmood_restaurants_app` uses `security_invoker = true`.
 - Supabase security advisors currently return no lints after the database setup.
+- Created `preview/supabase-data-demo` from the data foundation branch so Vercel can build a separate preview focused on the move from dummy/local restaurant data to Supabase-backed restaurant data.
 
 ### Current data model
 
