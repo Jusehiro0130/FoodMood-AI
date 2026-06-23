@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Completa todos los campos. La contrasena debe tener al menos 8 caracteres." }, { status: 400 });
   }
 
-  const origin = request.headers.get("origin") ?? new URL(request.url).origin;
+  const origin = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? request.headers.get("origin") ?? new URL(request.url).origin;
   const url = new URL(`${supabaseUrl.replace(/\/$/, "")}/auth/v1/signup`);
   url.searchParams.set("redirect_to", `${origin}/auth/callback`);
 

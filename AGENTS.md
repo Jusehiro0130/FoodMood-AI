@@ -98,6 +98,7 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - `foodmood_users` has RLS enabled and protects `role` from user self-escalation; admin can be assigned by SQL role update or by `FOODMOOD_ADMIN_EMAILS`.
 - Added `/register`, `/api/auth/signup`, and `/api/auth/password` for first name, last name, username, email, password signup and email activation.
 - Applied Supabase migration `foodmood_users_email_auth_update` to add first name, last name, username, and email provider defaults to `foodmood_users`.
+- Email activation links must use production URL settings in Supabase: Site URL `https://food-mood-ai.vercel.app` and redirect `https://food-mood-ai.vercel.app/auth/callback`. Added `APP_URL` support in signup to avoid localhost links in production.
 
 ### Current data model
 

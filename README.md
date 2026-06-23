@@ -43,6 +43,11 @@ Email/password login uses Supabase Auth. Configure `SUPABASE_URL` and `SUPABASE_
 
 Supabase email confirmation should be enabled for account activation. The app signup form collects first name, last name, username, email, and password, then tells the user to activate the account from their email before logging in.
 
+For production email activation, set `APP_URL=https://food-mood-ai.vercel.app` in Vercel and configure Supabase Auth URL settings:
+
+- Site URL: `https://food-mood-ai.vercel.app`
+- Redirect URL: `https://food-mood-ai.vercel.app/auth/callback`
+
 Admin users can be created in either of two ways:
 
 ```sql
