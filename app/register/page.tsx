@@ -2,11 +2,15 @@
 
 import { UserPlus, Utensils } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
 import { useState } from "react";
 import { AppShell } from "@/components/app-shell";
+import { saveAuthTokens } from "@/lib/auth/supabase-auth";
+import { defaultProfile, storage } from "@/lib/storage";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [form, setForm] = useState({ firstName: "", lastName: "", username: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
@@ -37,6 +41,26 @@ export default function RegisterPage() {
     }
 
     setSuccess(true);
+    if (data.accessToken && data.user) {
+      saveAuthTokens({
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+        expiresAt: data.expiresIn ? Date.now() + data.expiresIn * 1000 : undefined,
+      });
+      storage.saveSession({
+        userId: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+        accessToken: data.accessToken,
+        createdAt: new Date().toISOString(),
+        provider: "email",
+        role: data.user.role,
+      });
+      storage.saveProfile({ ...defaultProfile, id: data.user.id, name: data.user.name });
+      router.replace("/onboarding");
+      return;
+    }
+
     setMessage(data.message ?? "Revisa tu correo para activar la cuenta.");
   }
 
@@ -72,7 +96,7 @@ export default function RegisterPage() {
             </div>
             <div>
               <h1 className="text-3xl font-black text-[var(--foreground)]">Crear cuenta</h1>
-              <p className="mt-2 text-sm font-semibold leading-6 text-[var(--muted)]">Te enviaremos un correo para activar tu acceso.</p>
+              <p className="mt-2 text-sm font-semibold leading-6 text-[var(--muted)]">Crea tu acceso para guardar gustos, historial y recomendaciones.</p>
             </div>
           </div>
 

@@ -101,6 +101,7 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - Email activation links must use production URL settings in Supabase: Site URL `https://food-mood-ai.vercel.app` and redirect `https://food-mood-ai.vercel.app/auth/callback`. Added `APP_URL` support in signup to avoid localhost links in production.
 - Added guest access from `/login`. Guest sessions use `provider: "guest"`, can browse recommendations without email activation, and must not persist preferences, onboarding, search history, favorites, range, or Supabase user records.
 - Added `/api/auth/resend-confirmation` and a resend button on `/register` so users can request a new Supabase signup confirmation email when the original email is missing or expired.
+- Because Supabase's default confirmation email may not arrive reliably, `/api/auth/signup` now prefers the server-only `SUPABASE_SERVICE_ROLE_KEY` path when configured: it creates confirmed users through Supabase Admin API, then immediately creates an email/password session and sends the user to onboarding. If the service role key is missing, it falls back to email confirmation.
 
 ### Current data model
 
@@ -113,6 +114,7 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - Email-authenticated app sessions are also stored in `localStorage`; admin role is assigned by `/api/auth/session`, not by editable user metadata.
 - Guest sessions are local-only and intentionally non-persistent for user preferences/history/favorites; they are not written to Supabase.
 - Persistent user records live in Supabase `public.foodmood_users` with columns for email, name, first name, last name, username, avatar, provider, role, and last login.
+- `SUPABASE_SERVICE_ROLE_KEY` must remain server-only. It is used by signup/session endpoints to create confirmed users and upsert `foodmood_users`, never by client components.
 - Shared data types live in `lib/types.ts`.
 
 ### Local environment notes

@@ -41,7 +41,9 @@ When `SUPABASE_URL` and `SUPABASE_ANON_KEY` are configured, `/api/restaurants` r
 
 Email/password login uses Supabase Auth. Configure `SUPABASE_URL` and `SUPABASE_ANON_KEY` server-side so `/api/auth/signup`, `/api/auth/password`, and `/api/auth/session` can create accounts, validate tokens, and remember users in `foodmood_users`.
 
-Supabase email confirmation should be enabled for account activation. The app signup form collects first name, last name, username, email, and password, then tells the user to activate the account from their email before logging in.
+For the current MVP, configure server-only `SUPABASE_SERVICE_ROLE_KEY` in Vercel. When this key exists, `/api/auth/signup` creates users through the Supabase Admin API with `email_confirm: true` and immediately starts a session, avoiding blocked signups when Supabase's default confirmation email is delayed or not delivered. Never expose this key as a `NEXT_PUBLIC_` variable.
+
+If `SUPABASE_SERVICE_ROLE_KEY` is not configured, the signup form falls back to Supabase's normal email confirmation flow. In that mode, Supabase email confirmation should be enabled for account activation. The app signup form collects first name, last name, username, email, and password, then tells the user to activate the account from their email before logging in.
 
 For production email activation, set `APP_URL=https://food-mood-ai.vercel.app` in Vercel and configure Supabase Auth URL settings:
 
