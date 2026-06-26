@@ -82,7 +82,7 @@ function mapSupabaseRestaurant(row: SupabaseRestaurantRow): Restaurant {
     rating: toNumber(row.rating, 0),
     openingHours: row.opening_hours ?? "Horario por confirmar",
     website: row.website ?? undefined,
-    imageUrl: row.image_url ?? undefined,
+    imageUrl: row.image_url ?? `/restaurant-photos/${row.id}.jpg`,
     latitude: Number.isNaN(latitude) ? undefined : latitude,
     longitude: Number.isNaN(longitude) ? undefined : longitude,
   };

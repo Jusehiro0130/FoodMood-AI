@@ -407,6 +407,7 @@ export const restaurants: Restaurant[] = baseRestaurants.map((item, index) => ({
   rating: item[11],
   openingHours: item[12],
   website: item[13],
+  imageUrl: `/restaurant-photos/${item[0]}.jpg`,
 }));
 
 export function getRestaurantById(id: string) { return restaurants.find((restaurant) => restaurant.id === id); }

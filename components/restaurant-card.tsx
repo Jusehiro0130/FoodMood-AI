@@ -10,8 +10,10 @@ type RestaurantCardProps = { restaurant: RankedRestaurant; onFavoriteChange?: ()
 
 export function RestaurantCard({ restaurant, onFavoriteChange }: RestaurantCardProps) {
   const [saved, setSaved] = useState(false);
+  const [imageFailed, setImageFailed] = useState(false);
 
   useEffect(() => setSaved(storage.getFavorites().includes(restaurant.id)), [restaurant.id]);
+  useEffect(() => setImageFailed(false), [restaurant.id, restaurant.imageUrl]);
 
   function handleFavorite() {
     const next = storage.toggleFavorite(restaurant.id);
@@ -20,13 +22,22 @@ export function RestaurantCard({ restaurant, onFavoriteChange }: RestaurantCardP
   }
 
   return (
-    <article className="space-y-2">
-      <p className="px-1 text-[0.68rem] font-black uppercase tracking-[0.18em] text-[var(--muted)]">Concepto B - etiqueta colgante</p>
+    <article>
       <div className="relative overflow-hidden rounded-t-[1.1rem] rounded-b-[0.55rem] bg-[#1c130f] p-3 text-[#fff7ed] shadow-[0_14px_30px_rgba(28,19,15,0.18)]">
         <Link aria-label={`Ver detalle de ${restaurant.name}`} className="absolute inset-0" href={`/restaurant/${restaurant.id}`} />
         <div className="relative grid grid-cols-[3.65rem_1fr_auto] items-center gap-3">
-          <div className="grid size-14 place-items-center rounded-full border border-dashed border-[#ffd45f] bg-[#ff5a1f] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.18)]">
-            <Utensils size={23} strokeWidth={2.6} />
+          <div className="relative grid size-14 overflow-hidden rounded-full border border-dashed border-[#ffd45f] bg-[#ff5a1f] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.18)]">
+            {restaurant.imageUrl && !imageFailed ? (
+              <img
+                alt=""
+                className="absolute inset-0 h-full w-full object-cover"
+                loading="lazy"
+                onError={() => setImageFailed(true)}
+                src={restaurant.imageUrl}
+              />
+            ) : (
+              <Utensils className="m-auto" size={23} strokeWidth={2.6} />
+            )}
           </div>
 
           <div className="min-w-0">

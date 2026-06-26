@@ -93,6 +93,8 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 - Added `/api/auth/session` to validate Supabase access tokens server-side and assign `admin` from private comma-separated `FOODMOOD_ADMIN_EMAILS`.
 - Added admin visibility in profile and a client-side admin gate for `/admin/restaurants`.
 - Restyled restaurant cards to the compact dark "Concepto B - etiqueta colgante" pattern requested by the user: orange circular food icon, lowercase restaurant title, match percentage, and compact distance/price/rating row.
+- Removed the visible "Concepto B - etiqueta colgante" label from restaurant cards. Cards now support local restaurant images via `restaurant.imageUrl` and fall back to the utensil icon if the local file is missing or fails to load.
+- Added `public/restaurant-photos/` as the local folder for restaurant photo assets. The app maps local/static restaurants and Supabase restaurants to `/restaurant-photos/{restaurant-id}.jpg` when no database `image_url` exists.
 - Removed the demo login button so email/password auth is the primary entry path.
 - Added Supabase table `foodmood_users` through migration `create_foodmood_users_auth`; authenticated users are remembered there after login.
 - `foodmood_users` has RLS enabled and protects `role` from user self-escalation; admin can be assigned by SQL role update or by `FOODMOOD_ADMIN_EMAILS`.
@@ -107,6 +109,7 @@ FoodMood AI is a restaurant recommendation web app that understands natural lang
 
 - Supabase project `foodai` is provisioned and loaded. API URL: `https://wszrwmhjfllsazxmfjpl.supabase.co`.
 - Restaurant data falls back to mock/local in `lib/data/restaurants.ts`; when Supabase env vars exist in Vercel/local, `/api/restaurants` reads `foodmood_restaurants_app`.
+- Restaurant card photos should live in `public/restaurant-photos/` using the restaurant id/slug as the filename, for example `public/restaurant-photos/el-trapiche.jpg`. The current environment blocked binary downloads from Unsplash/Picsum/Wikimedia, so the folder is wired but may need manual image replacement with stable assets.
 - Vercel still needs Supabase environment variables configured for deployed builds: `SUPABASE_URL` and `SUPABASE_ANON_KEY` (or the `NEXT_PUBLIC_` aliases already supported by the app).
 - SerpApi source CSV files are tracked at the repo root; the safer deduplicated review file is `database/restaurants_serpapi_merged.csv`.
 - The selected MVP restaurant import contains 156 restaurants in `database/restaurants_selected_for_mvp.csv`.
